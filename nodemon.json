@@ -1,0 +1,6 @@
+{
+    "watch":["src"],
+    "ext": "ts,handlebars",
+    "ignore":[],
+    "exec": "npm run start"
+}
