@@ -4,6 +4,7 @@ import * as Winston from "winston";
 
 import { initRoutes } from "../routes";
 
+
 const exphbs = require('express-handlebars');
 
 export default class Server {
@@ -20,11 +21,16 @@ export default class Server {
         this.setConfig();
         this.setLogger();
         this.setViewEngine();
+        this.setStaticFiles();
     }
 
     public start() {
         this.app.listen(process.env.PORT);
         this.logger.info(`Server started at ${process.env.PORT}`);
+    }
+
+    private setStaticFiles() {
+        this.app.use(Express.static(`/public`));
     }
 
     private setViewEngine() {
