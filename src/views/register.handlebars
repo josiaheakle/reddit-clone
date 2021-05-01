@@ -1,0 +1,56 @@
+<div class="card">
+    <div class="card-content">
+        <span class="card-title center-align">Register</span>
+        <form action="" method="POST" class="form-basic">
+            <div class="input-field col">
+                <input name='firstName' id="first-name-input" type="text" value="{{getLastValue validationErrors "firstName"}}" class="validate  {{#if (hasError validationErrors "firstName")}} invalid {{/if}}">
+                <label for="first-name-input">First Name</label>
+                {{#if (hasError validationErrors "firstName")}}
+                    {{#each (getErrorMessages validationErrors "firstName")}}
+                        <span class="helper-text" data-error="{{this}}"></span>
+                    {{/each}}
+                {{/if}}
+            </div>
+            <div class="input-field col">
+                <input name='lastName' id="last-name-input" type="text" value="{{getLastValue validationErrors "lastName"}}" class="validate  {{#if (hasError validationErrors "lastName")}} invalid {{/if}}">
+                <label for="last-name-input">Last Name</label>
+                {{#if (hasError validationErrors "lastName")}}
+                    {{#each (getErrorMessages validationErrors "lastName")}}
+                        <span class="helper-text" data-error="{{this}}"></span>
+                    {{/each}}
+                {{/if}}
+            </div>
+            <div class="input-field col">
+                <input name='email' id="email-input" type="text" value="{{getLastValue validationErrors "email"}}" class="validate  {{#if (hasError validationErrors "email")}} invalid {{/if}}">
+                <label for="email-input">Email</label>
+                {{#if (hasError validationErrors "email")}}
+                    {{#each (getErrorMessages validationErrors "email")}}
+                        <span class="helper-text" data-error="{{this}}"></span>
+                    {{/each}}
+                {{/if}}
+            </div>
+            <div class="input-field col" >
+                <input name='password' id="password-input" type="password" value="{{getLastValue validationErrors "password"}}" class="validate {{#if (hasError validationErrors "password")}} invalid {{/if}}">
+                <label for="password-input">Password</label>
+                {{#if (hasError validationErrors "password")}}
+                    {{#each (getErrorMessages validationErrors "password")}}
+                        <span class="helper-text" data-error="{{this}}"></span>
+                    {{/each}}
+                {{/if}}
+            </div>
+            <div class="input-field col" >
+                <input name='passwordConfirm' id="password-confirm-input" type="password" value="{{getLastValue validationErrors "passwordConfirm"}}" class="validate {{#if (hasError validationErrors "passwordConfirm")}} invalid {{/if}} ">
+                <label for="password-confirm-input">Password Confirm</label>
+                {{#if (hasError validationErrors "passwordConfirm")}}
+                    {{#each (getErrorMessages validationErrors "passwordConfirm")}}
+                        <span class="helper-text" data-error="{{this}}"></span>
+                    {{/each}}
+                {{/if}}
+            </div>
+            <button class='btn-small' type="submit">Submit</button>
+        </form>
+        <div class='align-center'>
+            <a class='center-align' href='/login'>Already have an account?</a>
+        </div>
+    </div>
+</div>

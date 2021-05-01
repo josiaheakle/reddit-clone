@@ -1,43 +1,87 @@
 import * as Express from "express";
 import * as Morgan from "morgan";
 import * as Winston from "winston";
+import * as HTTP from "http";
+
+import path = require( "path" );
 
 import { initRoutes } from "../routes";
 
-
+const kill = require('kill-port');
+const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
 
 export default class Server {
 
-    public app    : Express.Application;
-    public router : Express.Router; 
-    public logger : Winston.Logger;
+    public app      : Express.Application;
+    public router   : Express.Router; 
+    public logger   : Winston.Logger;
+    private server  : HTTP.Server;
 
 
     constructor() {
         require('dotenv').config();
         this.app = Express();
-        this.setRoutes();
         this.setConfig();
         this.setLogger();
         this.setViewEngine();
         this.setStaticFiles();
+        this.serverCloseOnExit();
+        this.setRoutes();
     }
 
     public start() {
-        this.app.listen(process.env.PORT);
+        this.server = this.app.listen(process.env.PORT);
         this.logger.info(`Server started at ${process.env.PORT}`);
     }
 
+    private serverCloseOnExit() {
+        process.on('exit', () => {
+            this.server.close();
+        });
+        process.on('uncaughtException', (reason) => {
+            console.error(`uncaught exception`);
+            console.error(reason);
+
+        });
+        process.on('SIGTERM', () => {
+            this.server.close();
+        });
+    }
+
     private setStaticFiles() {
-        this.app.use(Express.static(`/public`));
+        this.app.use('/assets', Express.static(path.join(__dirname, "../public")));
     }
 
     private setViewEngine() {
-        this.app.set(`views`, `./src/views`);
-        const hbs = exphbs.create();
+        const hbs = exphbs.create({
+            helpers : {
+                hasError : function (errorArray : Array<{[index:string]:string}>, property : string) {
+                    let hasError = false;
+                    errorArray.forEach((obj) => {
+                        if(obj['param'] === property) hasError = true;
+                    });
+                    return hasError;
+                },
+                getErrorMessages : function (errorArray, property) {
+                    let errors = [];
+                    errorArray.forEach((obj) => {
+                        if(obj['param'] === property) errors.push(obj['msg']);
+                    });
+                    return errors;
+                },
+                getLastValue : function (errorArray, property) {
+                    let val = '';
+                    errorArray.forEach((obj) => {
+                        if(obj['param'] === property) val = obj['value'];
+                    });
+                    return val;
+                }
+            }
+        });
         this.app.engine('handlebars', hbs.engine);
         this.app.set(`view engine`, `handlebars`);
+        this.app.set(`views`, `./src/views`);
     }
 
     private setRoutes() {
@@ -45,8 +89,11 @@ export default class Server {
     }
 
     private setConfig() {
-        this.app.use(Express.json());
+        this.app.use(bodyParser.json());
+        this.app.use(bodyParser.urlencoded({extended:true}));
     }
+
+
 
     private setLogger() {
 		this.logger = Winston.createLogger({

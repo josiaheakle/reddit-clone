@@ -10,8 +10,8 @@ router.get('/', (req : Express.Request, res : Express.Response, next : Function)
 
 router.post('/', (req : Express.Request, res : Express.Response, next : Function) => {
 
-    console.log(req.body);
     console.log(`got form submit`);
+    console.log(req.body);
 
 });
 

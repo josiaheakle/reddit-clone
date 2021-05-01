@@ -2,5 +2,10 @@
     "watch":["src"],
     "ext": "ts,handlebars",
     "ignore":[],
-    "exec": "npm run start"
+    "exec": "npm run restart",
+    "events": {
+        "restart" : "sleep 1 && kill-port --port 4000 && echo RESTART",
+        "crash"   : "sleep 1 && kill-port --port 4000 && echo CRASH"
+    },
+    "delay": 2500
 }
