@@ -1,11 +1,11 @@
 {
     "watch":["src"],
-    "ext": "ts,handlebars",
+    "ext": "ts,handlebars,hbs",
     "ignore":[],
-    "exec": "npm run start",
+    "exec": "npm run start && echo SERVER STARTED",
     "events": {
-        "restart" : "kill-port --port 4000 && sleep 1 && echo RESTART && --exec npm run start",
-        "crash"   : "kill-port --port 4000 && sleep 1 && echo CRASH && --exec npm run start"
+        "restart" : "echo restart",
+        "crash"   : "echo crash"
     },
-    "delay": 1500
+    "delay": "3"
 }
