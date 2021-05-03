@@ -1,12 +1,12 @@
 
 <form action="" method="POST" class="form-basic">
 
-    {{#each inputFields}}
+    {{#each inputProperties}}
     <div class="input-field col">
-        <input name="{{this.name}}" id="{{this.id}}" type="{{this.type}}" value="{{this.value}}" class="validate {{#if (this.hasError)}} invalid {{else}} valid {{/if}}" >
-        <label for="{{this.id}}">{{this.displayName}}</label>
-        {{#if (this.hasError)}}
-            {{#each (this.errors)}}
+        <input name="{{this.name}}" id="{{this.id}}" type="{{this.type}}" value="{{this.value}}" class="validate {{#if (propertyHasError this)}} invalid {{else}} valid {{/if}}" >
+        <label for="{{this.id}}">{{this.displayString}}</label>
+        {{#if (propertyHasError this) }}
+            {{#each (getPropertyErrors this)}}
                 <span class="helper-text" data-error="{{this}}"></span>
             {{/each}}
         {{/if}}
