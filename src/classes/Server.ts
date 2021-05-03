@@ -28,7 +28,7 @@ export default class Server {
         this.setLogger();
         this.setViewEngine();
         this.setStaticFiles();
-        this.setCloseOnExit();
+        // this.setCloseOnExit();
         this.setRoutes();
     }
 
@@ -41,9 +41,7 @@ export default class Server {
         process.on('exit', () => {
             this.server.close();
         });
-        process.on('uncaughtException', (reason) => {
-            console.error(`uncaught exception`);
-            console.error(reason);
+        process.on('uncaughtException', () => {
             this.server.close();
 
         });

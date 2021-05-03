@@ -1,14 +1,14 @@
-import { ValidationError } from "express-validator";
+import * as ExpressValidator from "express-validator";
 import * as Express from "express";
 
 
 interface InputProperty {
 
-    id            : string, // HTML ID
-    name          : string, // PROPERTY NAME
-    type          : string, // HTML TYPE
+    id            : string,
+    name          : string, 
+    type          : string, 
     displayString : string,
-    value         : string|number,
+    value?        : string|number,
     errors?       : Array<string>
 
 }
@@ -19,12 +19,17 @@ class Form {
 
     constructor( inputs : Array<InputProperty> ) {
         this.inputs = inputs;
+        this.setInitValues();
+    }
+
+    private setInitValues () {
+        this.inputs.forEach(i => {
+            if (!i.value) i.value = '';
+            if (!i.errors) i.errors = [];
+        });
     }
 
     public updateValues (req : Express.Request) {
-
-        console.log(`updating values`);
-        console.log(req.body);
 
         this.inputs.forEach(i => {
             if (req.body[i.name]) {
@@ -32,22 +37,19 @@ class Form {
             }
         });
 
-        console.log(`UPDATED VALUES`);
-        console.log(this.inputs);
-
     }
 
-    public updateErrors (validationResult : ValidationError) {
+    public updateErrors (errors : Array<ExpressValidator.ValidationError>) {
 
-        console.log(`validation errors`);
-        console.log(validationResult);
-
-
-
-    }
-
-    public getRenderObject() {
-        return false;
+        
+        errors.forEach(error => {
+            this.inputs.forEach(input => {
+                if(error['param'] === input.name && !input.errors.includes(error['msg'])) {
+                    input.errors.push(error['msg']);
+                }
+            });
+        });
+        
     }
 
 }

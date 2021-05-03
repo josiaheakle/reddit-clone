@@ -3,7 +3,12 @@ import { InputProperty } from "../classes/Form";
 export const handlebarsHelpers = {
 
     propertyHasError : function ( property : InputProperty ) {
+        if (!property.errors) return false;
         if (property.errors.length > 0) return true;
+        return false;
+    },
+    getPropertyErrors : function (property : InputProperty ) {
+        return property.errors;
     },
 
     hasError : function (errorArray : Array<{[index:string]:string}>, property : string) {
