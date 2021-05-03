@@ -6,10 +6,12 @@ import * as HTTP from "http";
 import path = require( "path" );
 
 import { initRoutes } from "../routes";
+import { handlebarsHelpers } from "../helpers/handlebarsHelpers";
 
-const kill = require('kill-port');
+
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
+
 
 export default class Server {
 
@@ -26,7 +28,7 @@ export default class Server {
         this.setLogger();
         this.setViewEngine();
         this.setStaticFiles();
-        this.serverCloseOnExit();
+        this.setCloseOnExit();
         this.setRoutes();
     }
 
@@ -35,13 +37,14 @@ export default class Server {
         this.logger.info(`Server started at ${process.env.PORT}`);
     }
 
-    private serverCloseOnExit() {
+    private setCloseOnExit() {
         process.on('exit', () => {
             this.server.close();
         });
         process.on('uncaughtException', (reason) => {
             console.error(`uncaught exception`);
             console.error(reason);
+            this.server.close();
 
         });
         process.on('SIGTERM', () => {
@@ -55,29 +58,7 @@ export default class Server {
 
     private setViewEngine() {
         const hbs = exphbs.create({
-            helpers : {
-                hasError : function (errorArray : Array<{[index:string]:string}>, property : string) {
-                    let hasError = false;
-                    errorArray.forEach((obj) => {
-                        if(obj['param'] === property) hasError = true;
-                    });
-                    return hasError;
-                },
-                getErrorMessages : function (errorArray, property) {
-                    let errors = [];
-                    errorArray.forEach((obj) => {
-                        if(obj['param'] === property) errors.push(obj['msg']);
-                    });
-                    return errors;
-                },
-                getLastValue : function (errorArray, property) {
-                    let val = '';
-                    errorArray.forEach((obj) => {
-                        if(obj['param'] === property) val = obj['value'];
-                    });
-                    return val;
-                }
-            }
+            helpers : handlebarsHelpers
         });
         this.app.engine('handlebars', hbs.engine);
         this.app.set(`view engine`, `handlebars`);

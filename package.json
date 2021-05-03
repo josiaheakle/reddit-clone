@@ -2,7 +2,7 @@
   "name": "ts-reddit-clone",
   "version": "0.0.1",
   "description": "A simple reddit clone built with express, typescript, and mySQL",
-  "main": "src/app/index.ts",
+  "main": "src/index.ts",
   "scripts": {
     "start": "ts-node ./",
     "dev": "nodemon"

@@ -2,10 +2,10 @@
     "watch":["src"],
     "ext": "ts,handlebars",
     "ignore":[],
-    "exec": "npm run restart",
+    "exec": "npm run start",
     "events": {
-        "restart" : "sleep 1 && kill-port --port 4000 && echo RESTART",
-        "crash"   : "sleep 1 && kill-port --port 4000 && echo CRASH"
+        "restart" : "kill-port --port 4000 && sleep 1 && echo RESTART && --exec npm run start",
+        "crash"   : "kill-port --port 4000 && sleep 1 && echo CRASH && --exec npm run start"
     },
-    "delay": 2500
+    "delay": 1500
 }

@@ -12,8 +12,13 @@ const Database = (() => {
     });
     conn.connect();
 
+    function close() {
+        conn.end();
+    }
+
     return {
-        conn
+        conn,
+        close
     };
 
 })();
