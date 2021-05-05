@@ -1,17 +1,7 @@
 <div class="card">
     <div class="card-content">
         <span class="card-title center-align">Login</span>
-        <form method="POST" action="#" class="form-basic">
-            <div class="input-field col">
-                <input id="email-input" type="text" name='email' class="validate">
-                <label for="email-input">Email</label>
-            </div>
-            <div class="input-field col" >
-                <input id="password-input" name='password' type="password" class="validate">
-                <label for="password-input">Password</label>
-            </div>
-            <button class='btn-small' type="submit">Submit</button>
-        </form>
+            {{> form inputProperties=inputProperties}}
         <div class='align-center'>
             <a class='center-align' href='/register'>Need an account?</a>
         </div>

@@ -6,7 +6,14 @@ const bodyParser = require('body-parser');
 
 export function initRoutes(app : Express.Application) {
     app.get('/', (req : Express.Request, res : Express.Response, next : Function) => {
-        res.render('index');
+        if(req.session.user) {
+            res.render('index');
+        } else {
+            res.writeHead(301,
+                {Location: `http://localhost:4000/login`}
+            );
+            res.end(); 
+        }
     });
 
     app.use('/login', loginRouter);

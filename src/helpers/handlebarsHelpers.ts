@@ -10,7 +10,10 @@ export const handlebarsHelpers = {
     getPropertyErrors : function (property : InputProperty ) {
         return property.errors;
     },
-
+    isRequired : function (property : InputProperty) {
+        return property.required;
+    },
+ 
     hasError : function (errorArray : Array<{[index:string]:string}>, property : string) {
                     
         let hasError = false;

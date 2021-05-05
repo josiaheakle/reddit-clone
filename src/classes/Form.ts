@@ -1,6 +1,6 @@
 import * as ExpressValidator from "express-validator";
 import * as Express from "express";
-
+import { RuleError } from "./Model";
 
 interface InputProperty {
 
@@ -8,6 +8,7 @@ interface InputProperty {
     name          : string, 
     type          : string, 
     displayString : string,
+    required?     : boolean,
     value?        : string|number,
     errors?       : Array<string>
 
@@ -26,6 +27,7 @@ class Form {
         this.inputs.forEach(i => {
             if (!i.value) i.value = '';
             if (!i.errors) i.errors = [];
+            if (!i.required) i.required = false;
         });
     }
 
@@ -40,16 +42,35 @@ class Form {
     }
 
     public updateErrors (errors : Array<ExpressValidator.ValidationError>) {
-
         
         errors.forEach(error => {
             this.inputs.forEach(input => {
+                input.errors = [];
                 if(error['param'] === input.name && !input.errors.includes(error['msg'])) {
                     input.errors.push(error['msg']);
                 }
             });
         });
-        
+    }
+
+    public addModelErrors ( modelErrors : Array<RuleError> ) {
+        modelErrors.forEach(error => {
+            this.inputs.forEach(input => {
+                if (input.name === error.property && !input.errors.includes(error.message)) input.errors.push(error.message);
+            })
+        });
+    }
+
+    public addError (propertyName : string, error : string) {
+        this.inputs.forEach(input => {
+            if (input.name === propertyName) input.errors.push(error);
+        });
+    }
+
+    public hasError () {
+        return this.inputs.some(i => {
+            if (i.errors.length > 0) return true;
+        });
     }
 
 }

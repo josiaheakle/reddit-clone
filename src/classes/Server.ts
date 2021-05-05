@@ -9,6 +9,7 @@ import { initRoutes } from "../routes";
 import { handlebarsHelpers } from "../helpers/handlebarsHelpers";
 
 
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
 
@@ -70,6 +71,12 @@ export default class Server {
     private setConfig() {
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({extended:true}));
+        this.app.use(session({
+            secret: process.env.SESSION_SECRET,
+            resave: false,
+            saveUninitialized: true,
+            cookie: { secure: true }
+        }));
     }
 
 
