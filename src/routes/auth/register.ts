@@ -57,8 +57,8 @@ router.get('/', (req : Express.Request, res : Express.Response, next : Function)
 });
 
 router.post('/', 
-    body('firstName').matches(/^[a-zA-Z ]*$/).withMessage('Must be a valid name.').isLength({min:2, max:30}).withMessage('Must be between 2 and 30 characters.'),
-    body('lastName').matches(/^[a-zA-Z ]*$/).withMessage('Must be a valid name.').isLength({min:2, max:30}).withMessage('Must be between 2 and 30 characters.'),
+    body('firstName').matches(/^[a-zA-Z ]*$/).withMessage('Must be a valid name.').isLength({min:2, max:30}).withMessage('Must be between 2 and 30 characters.').trim(),
+    body('lastName').matches(/^[a-zA-Z ]*$/).withMessage('Must be a valid name.').isLength({min:2, max:30}).withMessage('Must be between 2 and 30 characters.').trim(),
     body('email').isEmail().withMessage('Must be a valid email address.').normalizeEmail(),
     body('password').isLength({
         min: 6

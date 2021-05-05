@@ -20,10 +20,23 @@ a:focus {
 }
 
 main {
+    min-height: calc( 100vh - 64px );
+    width: 100vw;
+    max-width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+main.nouser {
     min-height: 100vh;
     width: 100vw;
     max-width: 100vw;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+html {
+    overflow-x : hidden;
 }

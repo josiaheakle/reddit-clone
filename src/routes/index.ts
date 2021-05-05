@@ -3,6 +3,7 @@ import { Form } from "../classes/Form";
 
 import { router as loginRouter } from "./auth/login";
 import { router as registerRouter } from "./auth/register";
+import { router as userRouter } from "./user"
 
 function isLoggedIn(req : Express.Request, res : Express.Response, next : Function) {
 
@@ -60,4 +61,5 @@ export function initRoutes(app : Express.Application) {
 
     app.use('/register', registerRouter);
     app.use('/login', loginRouter);
+    app.use('/user', userRouter);
 }
