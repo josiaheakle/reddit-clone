@@ -1,5 +1,4 @@
 import * as Express from "express";
-import * as Session from "express-session";
 import { body, validationResult } from "express-validator";
 import { Model } from "../../classes/Model";
 import { Form } from "../../classes/Form";
@@ -52,7 +51,7 @@ router.get('/', (req : Express.Request, res : Express.Response, next : Function)
 
     res.render('reg', {
         layout: 'nouser',
-        inputProperties : registerForm.inputs
+        form : registerForm
 
     });
 });
@@ -126,18 +125,16 @@ router.post('/',
         if(registerForm.hasError()) {
             res.render('reg', {
                 layout : 'nouser',
-                inputProperties : registerForm.inputs
+                form : registerForm
             });
         } else {
 
             const userId = await registerModel.save();
             const user = await registerModel.getById(userId);
+
             req.session.user = user;
 
-            res.writeHead(301,
-                {Location: `http://localhost:4000/`}
-            );
-            res.end();        
+            res.redirect('/');
 
         }
 

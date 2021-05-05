@@ -1,7 +1,7 @@
 
-<form action="" method="POST" class="form-basic">
+<form action="{{form.action}}" method="POST" class="form-basic">
 
-    {{#each inputProperties}}
+    {{#each form.inputs}}
     <div class="input-field col">
         <input name="{{this.name}}" id="{{this.id}}" type="{{this.type}}" value="{{this.value}}" class="validate {{#if (propertyHasError this)}} invalid {{else}} valid {{/if}}" {{#if (isRequired this)}} required {{/if}} >
         <label for="{{this.id}}">{{this.displayString}}</label>

@@ -8,7 +8,7 @@ import path = require( "path" );
 import { initRoutes } from "../routes";
 import { handlebarsHelpers } from "../helpers/handlebarsHelpers";
 
-
+const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
@@ -70,13 +70,18 @@ export default class Server {
 
     private setConfig() {
         this.app.use(bodyParser.json());
-        this.app.use(bodyParser.urlencoded({extended:true}));
+        this.app.use(bodyParser.urlencoded({extended:false}));
+        this.app.use(cookieParser(process.env.SESSION_SECRET)); // any string ex: 'keyboard cat'
         this.app.use(session({
-            secret: process.env.SESSION_SECRET,
-            resave: false,
-            saveUninitialized: true,
-            cookie: { secure: true }
-        }));
+          secret: process.env.SESSION_SECRET,
+          cookie:{
+            maxAge:36000,
+            httpOnly:false,
+            secure:false
+            },
+          resave: false,
+          saveUninitialized: true
+        })) 
     }
 
 

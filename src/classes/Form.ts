@@ -17,9 +17,11 @@ interface InputProperty {
 class Form {
 
     public inputs : Array<InputProperty>;
+    public action : string;
 
-    constructor( inputs : Array<InputProperty> ) {
+    constructor( inputs : Array<InputProperty>, action? : string ) {
         this.inputs = inputs;
+        this.action = action || '';
         this.setInitValues();
     }
 

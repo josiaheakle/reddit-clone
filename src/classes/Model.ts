@@ -22,7 +22,7 @@ interface RuleError {
 class Model {
 
     private tableName  : string;
-    private properties : Array<ModelProprety>;
+    protected properties : Array<ModelProprety>;
 
     constructor(tableName : string, properties : Array<ModelProprety>) {
         this.tableName  = tableName;
@@ -91,55 +91,10 @@ class Model {
         });
     }
 
-    public async load() : Promise<object> {
-
-        const columns : Array<string> = [];
-        const values : Array<string|number> = [];
-
-        for (const prop of this.properties ) {
-            if (prop.rules.includes('unique')) {
-                columns.push(prop.columnName);
-                values.push(prop.value);
-            }
-        }
-
-
-
-        let whereClause = '';
-
-        columns.forEach((col, i) => {
-            if (i>0) whereClause = `${whereClause} AND `;
-            whereClause = `${whereClause} ${col} = ? `
-        });
-
-        let SQL = `SELECT * FROM ${this.tableName} WHERE ${whereClause} `
-
-/*
-${ columns.reduce((acc, cur, i) => {
-            if (i > 0) {
-               return acc = `${acc} AND ${cur} = ?`
-            } else return acc = `${cur}=?`;
-        }) }
-*/
-
-        console.log(SQL);
-
-        return {
-
-        }
-
-    }
-
     public async getById ( id : string|number ) {
         let SQL = `SELECT * FROM ${this.tableName} WHERE id=? `;
         return new Promise((res, rej) => {
             Database.conn.query(SQL, id, (error : MysqlError, results : {[index:string]:any}) => {
-                console.log({
-                    function : 'get by id',
-                    SQL      : SQL,
-                    error    : error,
-                    results  : results
-                })
                 if(error) rej (false);
                 else res(results[0]);
             });
