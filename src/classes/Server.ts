@@ -1,112 +1,100 @@
 import * as Express from "express";
-import * as Morgan from "morgan";
 import * as Winston from "winston";
-import * as HTTP from "http";
 
-import path = require( "path" );
-
-import { initRoutes } from "../routes";
-import { handlebarsHelpers } from "../helpers/handlebarsHelpers";
-
+const path = require("path");
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
+const morgan = require('morgan');
 
+export class Server {
 
-export default class Server {
+    public app: Express.Application;
+    private logger: Winston.Logger;
 
-    public app      : Express.Application;
-    public router   : Express.Router; 
-    public logger   : Winston.Logger;
-    private server  : HTTP.Server;
+    constructor(initRoutes: Function, handlebarsHelpers?: { [index: string]: Function }) {
 
-
-    constructor() {
         require('dotenv').config();
         this.app = Express();
         this.setConfig();
         this.setLogger();
-        this.setViewEngine();
+        this.setViewEngine(handlebarsHelpers);
         this.setStaticFiles();
-        // this.setCloseOnExit();
-        this.setRoutes();
+        this.setRoutes(initRoutes);
+
     }
 
     public start() {
-        this.server = this.app.listen(process.env.PORT);
+        this.app.listen(process.env.PORT);
         this.logger.info(`Server started at ${process.env.PORT}`);
-    }
-
-    private setCloseOnExit() {
-        process.on('exit', () => {
-            this.server.close();
-        });
-        process.on('uncaughtException', () => {
-            this.server.close();
-
-        });
-        process.on('SIGTERM', () => {
-            this.server.close();
-        });
     }
 
     private setStaticFiles() {
         this.app.use('/assets', Express.static(path.join(__dirname, "../public")));
     }
 
-    private setViewEngine() {
-        const hbs = exphbs.create({
-            helpers : handlebarsHelpers
-        });
+    private setViewEngine(handlebarsHelpers?: { [index: string]: Function }) {
+        let hbs;
+        if (handlebarsHelpers) {
+            hbs = exphbs.create({
+                helpers: handlebarsHelpers
+            });
+        } else {
+            hbs = exphbs.create();
+        }
         this.app.engine('handlebars', hbs.engine);
         this.app.set(`view engine`, `handlebars`);
         this.app.set(`views`, `./src/views`);
     }
 
-    private setRoutes() {
+    private setRoutes(initRoutes: Function) {
         initRoutes(this.app);
     }
 
     private setConfig() {
         this.app.use(bodyParser.json());
-        this.app.use(bodyParser.urlencoded({extended:false}));
-        this.app.use(cookieParser(process.env.SESSION_SECRET)); // any string ex: 'keyboard cat'
+        this.app.use(bodyParser.urlencoded({ extended: false }));
+        this.app.use(cookieParser(process.env.SESSION_SECRET));
         this.app.use(session({
-          secret: process.env.SESSION_SECRET,
-          cookie:{
-            maxAge:36000,
-            httpOnly:false,
-            secure:false
+            secret: process.env.SESSION_SECRET,
+            cookie: {
+                maxAge: 36000,
+                httpOnly: false,
+                secure: false
             },
-          resave: false,
-          saveUninitialized: true
-        })) 
+            resave: false,
+            saveUninitialized: true
+        }))
     }
 
-
-
     private setLogger() {
-		this.logger = Winston.createLogger({
+
+        const myFormat = Winston.format.printf(({ level, message, label, timestamp }) => {
+            return `[${timestamp}] ${message}`;
+        });
+
+        this.logger = Winston.createLogger({
             level: 'info',
-            format: Winston.format.json(),
+            format:  Winston.format.combine(
+                Winston.format.timestamp(),
+                myFormat
+            ),
             defaultMeta: { service: 'user-service' },
             transports: [
-              new Winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-              new Winston.transports.File({ filename: 'logs/combined.log' }),
-            ],          
-		});
+                new Winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+                new Winston.transports.File({ filename: 'logs/combined.log' }),
+            ],
+        });
 
-		// Set up HTTP request logging
-		const morganOptions: Morgan.Options = {
-			stream: {
-				write: (message) => {
-					this.logger.info(message);
-				},
-			},
-		};
-
-		this.app.use(Morgan('combined', morganOptions));
-	}
+        const morganOptions = {
+            stream: {
+                write: (message) => {
+                    this.logger.info(message);
+                },
+            },
+        };
+        this.app.use(morgan('combined', morganOptions));
+    }
 
 }

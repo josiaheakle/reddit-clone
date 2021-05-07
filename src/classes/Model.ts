@@ -1,12 +1,10 @@
 
-import { MysqlError } from "mysql";
-import { Database } from "./Database";
+import * as Mysql from "mysql";
 import * as Express from "express";
 
-const bcrypt = require('bcrypt');
+import { Database } from "./Database";
 
 interface ModelProprety {
-    name        : string,
     value?      : any,
     columnName? : string,
     rules?      : Array<string | {[index:string]:string}>
@@ -19,56 +17,65 @@ interface RuleError {
 }
 
 // Be sure to validate and sanitize before sending to Model
-class Model {
+/**
+ * Abstract Model
+ * ---
+ * When extending from this class, create each property as a public named as `property_${propertyName}` 
+ */
+abstract class Model {
+    [index:string]:any
 
-    private tableName  : string;
-    protected properties : Array<ModelProprety>;
-
-    constructor(tableName : string, properties : Array<ModelProprety>) {
-        this.tableName  = tableName;
-        this.properties = properties;
-    }
-
+    abstract _tableName  : string;
 
     public loadBody (request : Express.Request) {
-        this.properties.forEach(prop => {
-            if(request.body[prop.name]) {
-                prop.value = request.body[prop.name];
+
+        const propNames = this._getPropertyNames();
+
+        console.log(propNames);
+
+        propNames.forEach(prop => {
+            if(request.body[prop]) {
+                console.log({
+                    name: prop,
+                    req: request.body[prop],
+                    prop :this._getPropertyByName(prop)    
+                })
+                this._getPropertyByName(prop).value = request.body[prop];
             }
         });
     }
 
-    public async checkRules () {
+    public async checkRules () : Promise<Array<RuleError>|true> {
         const errors : Array<RuleError> = [];
 
-        for (const prop of this.properties) {
-            if (prop.rules) {
-                for (const rule of prop.rules) {
+        for (const prop of this._getPropertyNames()) {
+            if (this[this._convertPropToClassName(prop)].rules) {
+                for (const rule of this[this._convertPropToClassName(prop)].rules) {
                     if (typeof (rule) === 'string') {
                         // if rule is a string
                         if (! (await this[`_${rule}Rule`](prop))) errors.push({
-                            property : prop.name,
+                            property : prop,
                             rule     : rule,
                             message  : this._getErrorMessage(rule)
                         })
                     } else {
                         // if rule is an object
                         if (! (await this[`_${Object.keys(rule)[0]}Rule`](prop, Object.values(rule)[0]))) errors.push({
-                            property : prop.name,
+                            property : prop,
                             rule : Object.keys(rule)[0],
                             message : this._getErrorMessage(Object.keys(rule)[0])
                         });
 
                     }
-
                 }
             }
         }
 
-        return errors;
+        if (errors.length > 0) return errors;
+        else return true;
     }
 
-    public async save() : Promise<string|number> {
+    public async save() : Promise<false|number> {
         let columns : Array<string> = [];
         let values  : Array<any>    = [];
         
@@ -82,62 +89,60 @@ class Model {
         let SQL = `INSERT INTO ${this.tableName} (${columns.join(', ')}) VALUES (? ${", ?".repeat((values.length -1))})`;
     
         return new Promise((res, rej) => {
-            Database.conn.query(SQL, values, (error : MysqlError, results : {[index:string]:any}) => {
+            Database.conn.query(SQL, values, (error : Mysql.MysqlError, results : {[index:string]:any}) => {
                 console.log(`RESULT`);
                 console.log(results);
-                if(error) rej (error);
-                res(results.insertId);
+                if(error || !results.insertId) res(false);
+                else res(results.insertId);
             });
         });
     }
 
-    public async getById ( id : string|number ) {
+    public async getById ( id : string|number ) : Promise<false|{[index:string]: any}> {
         let SQL = `SELECT * FROM ${this.tableName} WHERE id=? `;
         return new Promise((res, rej) => {
-            Database.conn.query(SQL, id, (error : MysqlError, results : {[index:string]:any}) => {
-                if(error) rej (false);
+            Database.conn.query(SQL, id, (error : Mysql.MysqlError, results : {[index:string]:any}) => {
+                if(error || !results[0]) res (false);
                 else res(results[0]);
             });
         });
 
     }
     
-    private async _uniqueRule ( property : ModelProprety ) {
+    private async _uniqueRule ( propertyName : string ) : Promise<boolean> {
+        const property = this._getPropertyByName(propertyName);
         let SQL = `SELECT * FROM ${this.tableName} WHERE ${property.columnName}=? `;
 
         return new Promise((res, rej) => {
-            Database.conn.query(SQL, property.value, (error : MysqlError, results : {[index:string]:any}) => {
-                console.log({
-                    function : '_unique',
-                    SQL      : SQL,
-                    error    : error,
-                    results  : results
-                })
-                if(error) rej (false);
-                if(results.length > 0) res(false);
+            Database.conn.query(SQL, property.value, (error : Mysql.MysqlError, results : {[index:string]:any}) => {
+                if(error || results.length > 0) res(false);
                 else res(true);
             });
         });
     }
 
-    private async _passwordRule ( property : ModelProprety ) {
-        return new Promise((res, rej) => {
-            bcrypt.hash(property.value, 10, (err, hash) => {
-                if (err) rej (false);
-                else {
-                    property.value = hash;
-                    res(true);
-                }
-            });
-        });
-    }
-
-    private _getErrorMessage ( rule : string ) {
+    private _getErrorMessage ( rule : string ) : string {
         switch(rule) {
             case (`unique`):
                 return `Already in use.`
                 break;
         }
+    }
+
+    private _getPropertyByName ( propertyName : string ) : ModelProprety {
+        return this[this._convertPropToClassName(propertyName)];
+    }
+
+    private _getPropertyNames () : Array<string> {
+        let propNames = Object.getOwnPropertyNames(this).filter((propName : string) => propName.includes('property'));
+        propNames = propNames.map((prop) => {
+            return prop.replace('property_', '');
+        });
+        return propNames;
+    }
+
+    private _convertPropToClassName (propertyName : string) : string {
+        return `property_${propertyName}`;
     }
 
 }
