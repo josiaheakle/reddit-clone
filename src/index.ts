@@ -1,5 +1,8 @@
-import Server from "./classes/Server";
+import { Server } from "./classes";
 
-const app = new Server();
+import { initRoutes } from "./routes";
+import { handlebarsHelpers } from "./helpers/handlebarsHelpers"
+
+const app = new Server( initRoutes, handlebarsHelpers );
 
 app.start();

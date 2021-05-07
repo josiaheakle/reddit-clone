@@ -1,10 +1,10 @@
 
-<form action="{{form.action}}" method="POST" class="form-basic">
+<form action="{{formController.form.action}}" method="POST" class="form-basic">
 
-    {{#each form.inputs}}
+    {{#each formController.inputs}}
     <div class="input-field col">
-        <input name="{{this.name}}" id="{{this.id}}" type="{{this.type}}" value="{{this.value}}" class="validate {{#if (propertyHasError this)}} invalid {{else}} valid {{/if}}" {{#if (isRequired this)}} required {{/if}} >
-        <label for="{{this.id}}">{{this.displayString}}</label>
+        <input name="{{this.name}}" id="{{this.inputProperty.id}}" type="{{this.inputProperty.type}}" value="{{this.value}}" class="validate {{#if (propertyHasError this)}} invalid {{else}} valid {{/if}}" {{#if (isRequired this)}} required {{/if}} >
+        <label for="{{this.inputProperty.id}}">{{this.inputProperty.displayString}}</label>
         {{#if (propertyHasError this) }}
             {{#each (getPropertyErrors this)}}
                 <span class="helper-text" data-error="{{this}}"></span>

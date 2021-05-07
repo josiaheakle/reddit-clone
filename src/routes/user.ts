@@ -4,7 +4,8 @@ const router = Express.Router();
 router.get('/', (req : Express.Request, res : Express.Response, next: Function) => {
 
     res.render('user', {
-        user: req.session.user
+        user: req.session.user,
+        mainColor : 'purple'
     });
 
 });

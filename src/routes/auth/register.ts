@@ -1,57 +1,20 @@
 import * as Express from "express";
 import { body, validationResult } from "express-validator";
+import { FormController } from "../../classes/FormController";
 import { Model } from "../../classes/Model";
-import { Form } from "../../classes/Form";
+import { registerForm } from "../../forms/registerForm"
+import { RegisterModel } from "../../models/RegisterModel";
 
 const router = Express.Router();
 
 router.get('/', (req : Express.Request, res : Express.Response, next : Function) => {
-    const registerForm = new Form([
-        {
-            id: 'first-name-input',
-            name: 'firstName',
-            type: 'text',
-            displayString: 'First Name',
-            required: true
-        },
-        {
-            id: 'last-name-input',
-            name: 'lastName',
-            type: 'text',
-            displayString: 'Last Name',
-            required: true
-    
-        },
-        {
-            id: 'email-input',
-            name: 'email',
-            type: 'email',
-            displayString: 'Email',
-            required: true
-    
-        },
-        {
-            id : 'password-input',
-            name: 'password',
-            type: 'password',
-            displayString : 'Password',
-            required: true
-    
-        },
-        {
-            id : 'password-confirm-input',
-            name: 'passwordConfirm',
-            type: 'password',
-            displayString : 'Repeat Password',
-            required: true
-    
-        }
-    ]);
-    
 
-    res.render('reg', {
+    const formController = new FormController(registerForm);
+
+    res.render('auth/reg', {
         layout: 'nouser',
-        form : registerForm
+        formController : formController,
+        mainColor : 'purple'
 
     });
 });
@@ -69,71 +32,34 @@ router.post('/',
     }),
     async (req : Express.Request, res : Express.Response, next : Function) => {
 
-        const registerForm = new Form([
-            {
-                id: 'first-name-input',
-                name: 'firstName',
-                type: 'text',
-                displayString: 'First Name',
-                required: true
-            },
-            {
-                id: 'last-name-input',
-                name: 'lastName',
-                type: 'text',
-                displayString: 'Last Name',
-                required: true
-        
-            },
-            {
-                id: 'email-input',
-                name: 'email',
-                type: 'email',
-                displayString: 'Email',
-                required: true
-        
-            },
-            {
-                id : 'password-input',
-                name: 'password',
-                type: 'password',
-                displayString : 'Password',
-                required: true
-        
-            },
-            {
-                id : 'password-confirm-input',
-                name: 'passwordConfirm',
-                type: 'password',
-                displayString : 'Repeat Password',
-                required: true
-        
-            }
-        ]);
-        
+        const formController = new FormController(registerForm);        
 
         const valErrors = validationResult(req);
 
-        registerForm.updateValues(req);
-        registerForm.updateErrors(valErrors['errors']);
+        console.log({
+            validationErrors : valErrors['errors']
+        })
 
-        const registerModel = new Model('users', [{ name : 'firstName', columnName : 'firstName' }, {name:'lastName' , columnName : 'lastName'}, {name: 'email', columnName : 'email', rules : ['unique']}, {name : "password", columnName : 'password', rules : ['password']}]);
+        formController.updateValues(req);
+        formController.updateValidationErrors(valErrors['errors']);
+
+        console.log({inputsAfterValidation : formController.inputs});
+
+        const registerModel = new RegisterModel();
         registerModel.loadBody(req);
         const modelErrors = await registerModel.checkRules();
-        if (modelErrors.length > 0) registerForm.addModelErrors(modelErrors);
+        if (modelErrors !== true) formController.updateModelErrors(modelErrors);
 
-        if(registerForm.hasError()) {
-            res.render('reg', {
+        if(formController.hasError()) {
+            res.render('auth/reg', {
                 layout : 'nouser',
-                form : registerForm
+                formController : formController,
+                mainColor : 'purple'
             });
         } else {
 
-            const userId = await registerModel.save();
-            const user = await registerModel.getById(userId);
-
+            const user = await registerModel.createAccount();
             req.session.user = user;
-
             res.redirect('/');
 
         }

@@ -1,17 +1,17 @@
-import { InputProperty } from "../classes/Form";
+import { FormControllerInput } from "../classes/FormController";
 
 export const handlebarsHelpers = {
 
-    propertyHasError : function ( property : InputProperty ) {
+    propertyHasError : function ( property : FormControllerInput ) {
         if (!property.errors) return false;
         if (property.errors.length > 0) return true;
         return false;
     },
-    getPropertyErrors : function (property : InputProperty ) {
+    getPropertyErrors : function (property : FormControllerInput ) {
         return property.errors;
     },
-    isRequired : function (property : InputProperty) {
-        return property.required;
+    isRequired : function (property : FormControllerInput) {
+        return property.inputProperty.required;
     },
  
     hasError : function (errorArray : Array<{[index:string]:string}>, property : string) {

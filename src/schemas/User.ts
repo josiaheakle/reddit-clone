@@ -1,11 +1,11 @@
 interface User {
-    id : number,
-    uuid : string,
+    id? : number,
+    uuid? : string,
     firstName : string,
     lastName : string,
     email : string,
     password : string,
-    created : Date
+    created? : Date
 }
 
 export {
