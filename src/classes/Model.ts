@@ -79,19 +79,23 @@ abstract class Model {
         let columns : Array<string> = [];
         let values  : Array<any>    = [];
         
-        this.properties.forEach((prop) => {
-            if(prop.columnName) {
-                columns.push(prop.columnName);
-                values.push(prop.value);
-            }
+
+        const properties = this._getPropertyNames();
+        properties.forEach(p => {
+            const prop = this._getPropertyByName(p);
+            columns.push(prop.columnName);
+            values.push(prop.value);
         });
 
-        let SQL = `INSERT INTO ${this.tableName} (${columns.join(', ')}) VALUES (? ${", ?".repeat((values.length -1))})`;
+        let SQL = `INSERT INTO ${this._tableName} (${columns.join(', ')}) VALUES (? ${", ?".repeat((values.length -1))})`;
     
         return new Promise((res, rej) => {
             Database.conn.query(SQL, values, (error : Mysql.MysqlError, results : {[index:string]:any}) => {
                 console.log(`RESULT`);
                 console.log(results);
+
+                console.log(`ERROR`);
+                console.log(error);
                 if(error || !results.insertId) res(false);
                 else res(results.insertId);
             });
@@ -99,7 +103,7 @@ abstract class Model {
     }
 
     public async getById ( id : string|number ) : Promise<false|{[index:string]: any}> {
-        let SQL = `SELECT * FROM ${this.tableName} WHERE id=? `;
+        let SQL = `SELECT * FROM ${this._tableName} WHERE id=? `;
         return new Promise((res, rej) => {
             Database.conn.query(SQL, id, (error : Mysql.MysqlError, results : {[index:string]:any}) => {
                 if(error || !results[0]) res (false);
@@ -111,11 +115,17 @@ abstract class Model {
     
     private async _uniqueRule ( propertyName : string ) : Promise<boolean> {
         const property = this._getPropertyByName(propertyName);
-        let SQL = `SELECT * FROM ${this.tableName} WHERE ${property.columnName}=? `;
+        let SQL = `SELECT * FROM ${this._tableName} WHERE ${property.columnName}=? `;
 
         return new Promise((res, rej) => {
             Database.conn.query(SQL, property.value, (error : Mysql.MysqlError, results : {[index:string]:any}) => {
-                if(error || results.length > 0) res(false);
+                if(error || results.length > 0) { 
+                    console.log({
+                        error : error,
+                        results : results
+                    })
+                    res(false); 
+                }
                 else res(true);
             });
         });
