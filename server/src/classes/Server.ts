@@ -1,4 +1,5 @@
 import * as Express from "express";
+import { userInfo } from "node:os";
 import * as Winston from "winston";
 
 const path = require("path");
@@ -8,20 +9,27 @@ const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
 const morgan = require('morgan');
 
+interface ServerOptions {
+    initRoutes : Function,
+    reactBuild? : string,
+    handlebarsHelpers?: { [index: string]: Function }
+}
+
 export class Server {
 
     public app: Express.Application;
     private logger: Winston.Logger;
 
-    constructor(initRoutes: Function, handlebarsHelpers?: { [index: string]: Function }) {
+    constructor(serverOptions : ServerOptions) {
 
         require('dotenv').config();
         this.app = Express();
         this.setConfig();
         this.setLogger();
-        this.setViewEngine(handlebarsHelpers);
+        if (serverOptions.handlebarsHelpers) this.setViewEngine(serverOptions.handlebarsHelpers);
+        if (serverOptions.reactBuild) this.setReactAppDefault(serverOptions.reactBuild);
         this.setStaticFiles();
-        this.setRoutes(initRoutes);
+        this.setRoutes(serverOptions.initRoutes);
 
     }
 
@@ -31,7 +39,15 @@ export class Server {
     }
 
     private setStaticFiles() {
+        this.app.use(Express.static(path.join(__dirname, '..', '..', '..', 'client', 'build')));
         this.app.use('/assets', Express.static(path.join(__dirname, "../public")));
+    }
+
+    private setReactAppDefault ( reactBuildLocation : string ) {
+        console.log(`setting  react app as default ${reactBuildLocation}`);
+        this.app.use((req : Express.Request, res : Express.Response, next : Function) => {
+            res.sendFile(reactBuildLocation);
+        });
     }
 
     private setViewEngine(handlebarsHelpers?: { [index: string]: Function }) {

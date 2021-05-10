@@ -4,8 +4,6 @@ const router = Express.Router();
 
 router.get('/', (req : Express.Request, res : Express.Response, next: Function) => {
 
-    console.log(`user : ${req.session.user.firstName}|`)
-
     res.render('user', {
         rootUrl : process.env.URL,
         user: req.session.user,
