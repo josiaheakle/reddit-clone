@@ -13,6 +13,14 @@ export const handlebarsHelpers = {
     isRequired : function (property : FormControllerInput) {
         return property.inputProperty.required;
     },
+    isTypeTextarea : function (property : FormControllerInput) {
+        if (property.inputProperty.type === 'textarea') return true;
+        else return false;
+    },
+    isTypeSwitch : function (property : FormControllerInput) {
+        if (property.inputProperty.type === 'switch') return true;
+        else return false;
+    }, 
  
     hasError : function (errorArray : Array<{[index:string]:string}>, property : string) {
                     

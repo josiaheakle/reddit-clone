@@ -13,6 +13,8 @@ router.get('/', (req: Express.Request, res: Express.Response, next: Function) =>
 
     const formController = new FormController(form);
     res.render('auth/login', {
+        rootUrl : process.env.URL,
+
         layout: "nouser",
         formController: formController,
         mainColor: 'purple'

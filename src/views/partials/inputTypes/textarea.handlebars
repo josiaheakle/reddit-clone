@@ -1,0 +1,12 @@
+
+{{#with input}}
+    <div class="input-field col textarea">
+        <textarea name="{{this.name}}" id="{{this.inputProperty.id}}" class="materialize-textarea validate" {{#if (isRequired this)}} required {{/if}} >{{this.value}}</textarea>
+        <label for="{{this.inputProperty.id}}">{{this.inputProperty.displayString}}</label>
+        {{#if (propertyHasError this) }}
+            {{#each (getPropertyErrors this)}}
+                <span class="helper-text" data-error="{{this}}"></span>
+            {{/each}}
+        {{/if}}
+    </div>
+{{/with}}

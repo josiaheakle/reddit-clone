@@ -14,6 +14,9 @@ function handleInfoMessages (req : Express.Request, res : Express.Response, next
                 req.session.seenMessages.push(message);
             }
         });
+    } else {
+        req.session.messages = [];
+        req.session.seenMessages = [];
     }
 
     next();

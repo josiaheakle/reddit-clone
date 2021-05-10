@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 
 class RegisterModel extends Model {
 
-    public _tableName = 'users';
+    public _tableName = 'Users';
     public property_email : ModelProprety = {
         columnName : 'email',
         rules: ['unique']
@@ -21,7 +21,7 @@ class RegisterModel extends Model {
     };
     public property_passwordConfirm : ModelProprety;
 
-    public async createAccount() : Promise <User|boolean> {
+    public async createAccount() : Promise <User|false> {
 
         if(await this._hashPassword()) {
             const userId = await this.save();

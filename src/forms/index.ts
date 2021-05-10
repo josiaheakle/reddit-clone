@@ -1,7 +1,3 @@
-import { loginForm } from "./loginForm";
-import { registerForm } from "./registerForm";
-
-export {
-    loginForm,
-    registerForm
-}
+export { loginForm } from "./loginForm";
+export { registerForm } from "./registerForm";    
+export { newCategoryForm } from "./newCategoryForm";

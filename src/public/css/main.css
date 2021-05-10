@@ -40,3 +40,7 @@ main.nouser {
 html {
     overflow-x : hidden;
 }
+
+.textarea {
+    width: 100%;
+}

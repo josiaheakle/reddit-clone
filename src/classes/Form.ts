@@ -4,11 +4,13 @@ import { RuleError } from "./Model";
 
 interface InputProperty {
 
-    id            : string,
-    name          : string, 
-    type          : string, 
-    displayString : string,
-    required?     : boolean
+    id              : string,
+    name            : string, 
+    type            : string, 
+    onString?       : string,
+    offString?      : string,
+    displayString?  : string,
+    required?       : boolean
 
 }
 
