@@ -1,6 +1,6 @@
 import {Model, ModelProprety} from "../classes"
 import { UserCategoryModel } from "./UserCategoryModel";
-import {Category} from "../schemas/Category";
+import {Category} from "../types/schemas";
 /**
  * Used for 
  */

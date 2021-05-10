@@ -1,7 +1,8 @@
+import * as Session from "express-session";
 import { MysqlError } from "mysql";
 import {Model, ModelProprety} from "../classes"
 import { Database } from "../classes";
-import { User } from "../schemas/User";
+import { User } from "../types/schemas";
 
 const bcrypt = require('bcrypt');
 
@@ -62,7 +63,7 @@ class UserModel extends Model {
 
     }
 
-    public updateEmailFromSession ( session : Express.Session ) {
+    public updateEmailFromSession ( session : Session.SessionData ) {
         if (session.user) {
             this.property_email.value = session.user.email;
         }

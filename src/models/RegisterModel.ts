@@ -1,5 +1,5 @@
 import { Model, ModelProprety } from "../classes/Model";
-import { User } from "../schemas/User";
+import { User } from "../types/schemas";
 
 const bcrypt = require('bcrypt');
 

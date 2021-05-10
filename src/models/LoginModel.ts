@@ -1,5 +1,4 @@
-import { User } from "../schemas/User"
-import { Database } from "../classes/Database";
+import { User } from "../types/schemas"
 import { UserModel } from "./UserModel";
 
 class LoginModel extends UserModel {
