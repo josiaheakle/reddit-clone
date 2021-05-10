@@ -1,24 +1,12 @@
 import * as Express from "express";
 import { body, validationResult } from "express-validator";
-import { FormController } from "../../classes/FormController";
 import { Model } from "../../classes/Model";
-import { registerForm } from "../../forms/registerForm"
 import { RegisterModel } from "../../models/RegisterModel";
 
 const router = Express.Router();
 
 router.get('/', (req: Express.Request, res: Express.Response, next: Function) => {
 
-    const formController = new FormController(registerForm);
-
-    res.render('auth/reg', {
-        rootUrl: process.env.URL,
-
-        layout: 'nouser',
-        formController: formController,
-        mainColor: 'purple'
-
-    });
 });
 
 router.post('/',
@@ -34,44 +22,13 @@ router.post('/',
     }),
     async (req: Express.Request, res: Express.Response, next: Function) => {
 
-        const formController = new FormController(registerForm);
 
         const valErrors = validationResult(req);
 
-        formController.updateValues(req);
-        formController.updateValidationErrors(valErrors['errors']);
 
         const registerModel = new RegisterModel();
         registerModel.loadBody(req);
         const modelErrors = await registerModel.checkRules();
-        if (modelErrors !== true) formController.updateModelErrors(modelErrors);
-
-        if (formController.hasError()) {
-            res.render('auth/reg', {
-                rootUrl: process.env.URL,
-
-                layout: 'nouser',
-                formController: formController,
-                mainColor: 'purple'
-            });
-        } else {
-
-            const user = await registerModel.createAccount();
-            if (user) {
-                req.session.messages.push(`Welcome, ${user.firstName}. Your account has been created successfully.`)
-                req.session.user = user;
-                res.redirect('/');
-            } else {
-                formController.addError('email', 'Unable to create account.');
-                res.render('auth/reg', {
-                    rootUrl: process.env.URL,
-                    layout: 'nouser',
-                    formController: formController,
-                    mainColor: 'purple'
-                });
-            }
-
-        }
 
 
     }

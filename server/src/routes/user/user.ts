@@ -2,15 +2,6 @@ import * as Express from "express";
 import { UserModel } from "../../models";
 const router = Express.Router();
 
-router.get('/', (req : Express.Request, res : Express.Response, next: Function) => {
-
-    res.render('user', {
-        rootUrl : process.env.URL,
-        user: req.session.user,
-        mainColor : 'purple'
-    });
-
-});
 
 router.get('/logout', (req : Express.Request, res : Express.Response, next: Function) => {
 
@@ -32,12 +23,6 @@ router.get('/delete', async (req : Express.Request, res : Express.Response, next
         });
     } else {
         req.session.messages.push('Unable to delete account at this time, please contact admin.');
-        res.render('user', {
-            rootUrl : process.env.URL,
-            user: req.session.user,
-            mainColor : 'purple',
-            infoMessages : req.session.messages
-        });
     }
 
 

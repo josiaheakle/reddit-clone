@@ -8,18 +8,9 @@ import { router as categoryRouter } from "./category/category"
 import { handleInfoMessages, isLoggedIn } from "../middleware"
 
 export function initRoutes(app : Express.Application) {
-    app.use('/', /*isLoggedIn, handleInfoMessages,*/ (req : Express.Request, res : Express.Response, next : Function) => {
+    app.use('/', isLoggedIn, handleInfoMessages, (req : Express.Request, res : Express.Response, next : Function) => {
         next();
     });
-
-    // app.get('/', (req : Express.Request, res : Express.Response, next : Function) => {
-    //     // res.render('index', {
-    //     //     rootUrl : process.env.URL,
-    //     //     mainColor : 'purple',
-    //     //     infoMessages : req.session.messages
-    //     // });
-    //     next();
-    // });
 
     app.use('/register', registerRouter);
     app.use('/login', loginRouter);

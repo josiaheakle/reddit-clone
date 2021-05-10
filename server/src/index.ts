@@ -1,5 +1,6 @@
 import { Server } from "./classes";
 import { User } from "../src/types/schemas";
+import { initRoutes } from "./routes";
 
 declare module 'express-session' {
     export interface SessionData {
@@ -9,8 +10,6 @@ declare module 'express-session' {
     }
   }
 
-import { initRoutes } from "./routes";
-import { handlebarsHelpers } from "./helpers/handlebarsHelpers"
 
 
 const path = require('path');
