@@ -9,7 +9,7 @@ const router = Express.Router();
 
 
 /**
- * c/ => SHOWS ALL FOLLOWING CATEGORIES
+ * categories/ => SHOWS ALL FOLLOWING CATEGORIES
  *  new/   => CREATE A NEW CATEGORY
  *  {any}/ => CATEGORY PAGE ( shows all posts for said category )
  */
