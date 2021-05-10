@@ -2,7 +2,7 @@
     "watch":["src"],
     "ext": "ts,handlebars,hbs",
     "ignore":[],
-    "exec": "npm run start && echo SERVER STARTED",
+    "exec": "npm run start ",
     "events": {
         "restart" : "echo restart",
         "crash"   : "echo crash"
