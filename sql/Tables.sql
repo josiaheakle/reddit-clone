@@ -17,8 +17,9 @@ CREATE TABLE Categories (
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	name VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,
-    admin INT NOT NULL FOREIGN KEY REFERENCES Users (id),
-    private BOOLEAN NOT NULL,
+    admin INT NOT NULL,
+    FOREIGN KEY (admin) REFERENCES Users (id),
+    private BOOLEAN NOT NULL DEFAULT 0,
     created   DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -33,3 +34,6 @@ CREATE TABLE UserCategories (
         ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (userId, categoryId)
 );
+
+
+
