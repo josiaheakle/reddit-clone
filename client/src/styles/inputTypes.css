@@ -1,0 +1,108 @@
+.TextInputContainer {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.TextInput {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.TextInput>label {
+    z-index: 1;
+    height: 0px;
+    position: relative;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    text-align: left;
+    bottom: -12px;
+    cursor: unset;
+    transition: bottom .2s ease-out, font-size .2s, color;
+    color: var(--light);
+}
+
+.TextInput>input {
+
+    border-radius: 3rem;
+    height: 28px;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    border: 1px solid var(--dark);
+    outline: none;
+    background-color: var(--dark);
+    color: var(--orange);
+    transition: filter .15s;
+    font-size: 16px;
+    padding-top: .75rem;
+    padding-bottom: 0px;
+
+}
+
+
+.TextInput>input:hover {
+    filter: brightness(1.5);
+}
+
+.TextInput>label.focused {
+    bottom: -2px;
+    font-size: 12px;
+    color: var(--grey);
+}
+
+.TextInput-error {
+    font-size: .9em;
+    text-align: left;
+    width: 200px;
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+}
+
+.TextInput-error-list {
+    margin: .25em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.Button {
+
+    /* border: 1px solid black; */
+    outline: none;
+    border: none;
+    
+  
+    border-radius: 2rem;
+    background-color: var(--dark);
+    color: var(--light);
+    padding: .3rem; 
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    height: 30px;
+
+    font-size: 16px;
+  
+    --outline-offest: 2px;
+  
+    /* outline: 1px solid black;
+    outline-offset: -1px; */
+  
+  
+  
+  }
+
+.Button {
+    cursor: pointer;
+    transition: filter .15s ease, color .2s;
+}
+
+.Button:hover, 
+.Button:focus { 
+
+    filter: brightness(1.5);
+    color: var(--grey);
+
+}

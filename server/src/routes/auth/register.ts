@@ -1,7 +1,8 @@
 import * as Express from "express";
 import { body, validationResult } from "express-validator";
-import { Model } from "../../classes/Model";
 import { RegisterModel } from "../../models/RegisterModel";
+import { InputController } from "../../classes";
+
 
 const router = Express.Router();
 
@@ -23,12 +24,49 @@ router.post('/',
     async (req: Express.Request, res: Express.Response, next: Function) => {
 
 
-        const valErrors = validationResult(req);
+        
+        const inController = new InputController([{
+            name: 'email'
+        }, {
+            name: 'password'
+        }, {
+            name: 'firstName'
+        }, {
+            name: 'lastName'
+        }, {
+            name: 'passwordConfirm'
+        }]);
+        
+        const valRes = validationResult(req);
+        inController.updateValidationErrors(valRes);
 
+        const model = new RegisterModel();
+        model.loadBody(req);
+        const modelErrors = await model.checkRules();
+        if (modelErrors !== true) {
+            inController.updateModelErrors(modelErrors);
+        };
 
-        const registerModel = new RegisterModel();
-        registerModel.loadBody(req);
-        const modelErrors = await registerModel.checkRules();
+        if (inController.hasErrors()) {
+            console.log(`incon has errors`);
+            console.log(inController.inputs);
+            inController.sendValidationErrors(req, res, next);
+        } else {
+            const user = await model.createAccount();
+            if (user) {
+                req.session.user = user;
+                res.status(200).send({
+                    email: user.email,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    uuid: user.uuid
+                })
+            } else {
+                res.status(401).send({
+                    message: 'Unable to create account, please try again.'
+                })
+            }
+        }
 
 
     }

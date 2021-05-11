@@ -8,6 +8,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const exphbs = require('express-handlebars');
 const morgan = require('morgan');
+const cors = require('cors');
 
 interface ServerOptions {
     initRoutes : Function,
@@ -24,12 +25,14 @@ export class Server {
 
         require('dotenv').config();
         this.app = Express();
+        this.setDev(); //REMOVE LATER
         this.setConfig();
         this.setLogger();
         if (serverOptions.handlebarsHelpers) this.setViewEngine(serverOptions.handlebarsHelpers);
         if (serverOptions.reactBuild) this.setReactAppDefault(serverOptions.reactBuild);
         this.setStaticFiles();
         this.setRoutes(serverOptions.initRoutes);
+
 
     }
 
@@ -81,6 +84,13 @@ export class Server {
             },
             resave: false,
             saveUninitialized: true
+        }))
+    }
+
+    private setDev() {
+        this.app.use(cors({
+            origin: 'http://localhost:3000',
+            optionSuccessStatus: 200
         }))
     }
 

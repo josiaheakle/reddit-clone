@@ -53,11 +53,16 @@ abstract class Model {
                 for (const rule of this[this._convertPropToClassName(prop)].rules) {
                     if (typeof (rule) === 'string') {
                         // if rule is a string
-                        if (! (await this[`_${rule}Rule`](prop))) errors.push({
-                            property : prop,
-                            rule     : rule,
-                            message  : this._getErrorMessage(rule)
-                        })
+                        if (! (await this[`_${rule}Rule`](prop))) {
+
+                            console.log(`${rule} broken`);
+                            errors.push({
+                                property : prop,
+                                rule     : rule,
+                                message  : this._getErrorMessage(rule)
+                            })
+
+                        }
                     } else {
                         // if rule is an object
                         if (! (await this[`_${Object.keys(rule)[0]}Rule`](prop, Object.values(rule)[0]))) errors.push({
@@ -78,7 +83,6 @@ abstract class Model {
     public async save() : Promise<false|number> {
         let columns : Array<string> = [];
         let values  : Array<any>    = [];
-        
 
         const properties = this._getPropertyNames();
         properties.forEach(p => {
@@ -116,6 +120,8 @@ abstract class Model {
     private async _uniqueRule ( propertyName : string ) : Promise<boolean> {
         const property = this._getPropertyByName(propertyName);
         let SQL = `SELECT * FROM ${this._tableName} WHERE ${property.columnName}=? `;
+
+        console.log(`_uniqueRule() : \n${SQL}`)
 
         return new Promise((res, rej) => {
             Database.conn.query(SQL, property.value, (error : Mysql.MysqlError, results : {[index:string]:any}) => {
