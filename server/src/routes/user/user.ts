@@ -1,9 +1,43 @@
 import * as Express from "express";
 import { UserModel } from "../../models";
+import { AuthController } from "../../classes/AuthController";
+import { StandardResponse } from "../../types/StandardResponse";
+import {User} from "../../types/schemas";
+
 const router = Express.Router();
 
 
-router.get('/logout', (req : Express.Request, res : Express.Response, next: Function) => {
+
+
+router.get('/', async (req : Express.Request, res : Express.Response, next : Function) => {
+
+    console.log(`here`);
+
+    const userModel = new UserModel();
+    let user: User|false = false;
+    if (req.userId) {
+        user = await userModel.getById<User>(req.userId);
+    }
+
+    if (user !== false) {
+        const response : StandardResponse = {
+            success: true,
+            data: {
+                user: userModel.getCleanUser(user)
+            }
+        }
+        res.status(200).send(response);
+    } else {
+        res.status(400).send({
+            success: false,
+            message: 'Login'
+        })
+    }
+
+
+});
+
+router.post('/logout', (req : Express.Request, res : Express.Response, next: Function) => {
 
     req.session.destroy((err) => {
         if (err) console.error(err);
@@ -12,7 +46,7 @@ router.get('/logout', (req : Express.Request, res : Express.Response, next: Func
 
 });
 
-router.get('/delete', async (req : Express.Request, res : Express.Response, next: Function) => {
+router.post('/delete', async (req : Express.Request, res : Express.Response, next: Function) => {
 
     const userModel = new UserModel();
     userModel.updateEmailFromSession(req.session);
@@ -22,7 +56,7 @@ router.get('/delete', async (req : Express.Request, res : Express.Response, next
             else res.redirect('/');
         });
     } else {
-        req.session.messages.push('Unable to delete account at this time, please contact admin.');
+        // req.session.messages.push('Unable to delete account at this time, please contact admin.');
     }
 
 

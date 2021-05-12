@@ -106,7 +106,7 @@ abstract class Model {
         });
     }
 
-    public async getById ( id : string|number ) : Promise<false|{[index:string]: any}> {
+    public async getById <T>( id : string|number ) : Promise<false|T> {
         let SQL = `SELECT * FROM ${this._tableName} WHERE id=? `;
         return new Promise((res, rej) => {
             Database.conn.query(SQL, id, (error : Mysql.MysqlError, results : {[index:string]:any}) => {

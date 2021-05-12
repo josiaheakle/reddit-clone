@@ -4,9 +4,13 @@ import { Button } from "../../reusable/inputTypes/Button"
 import { useState } from 'react'
 import { User } from '../../../types/schemas'
 import { useEffect } from 'react'
+import { StandardResponse } from '../../../types/StandardResponse'
+import {Redirect } from "react-router-dom";
 
 interface RegisterPageProps {
-
+    setUser : (user : User) => void;
+    setToken : (token : string) => void;
+    user?: User;
 }
 
 export const RegisterPage: React.FC<RegisterPageProps> = (props) => {
@@ -44,8 +48,12 @@ export const RegisterPage: React.FC<RegisterPageProps> = (props) => {
             })
         });
 
-        const errors = await res.json();
-        setErrors(errors);
+        const result : StandardResponse = await res.json();
+        if(result.errors) setErrors(result.errors);
+        if(result.success===true && result.data) {
+            props.setUser(result.data.user);
+            props.setToken(result.data.token);
+        }
 
     }
 
@@ -55,6 +63,9 @@ export const RegisterPage: React.FC<RegisterPageProps> = (props) => {
 
     return (
         <div id='LoginPage'>
+            {props.user?
+                <Redirect to='/'></Redirect>
+            :null}
             <div className="loginContainer">
                 <h2 className="loginHeader header-text">Register</h2>
                 <form onSubmit={register}>

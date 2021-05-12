@@ -1,9 +1,10 @@
 import { Model, ModelProprety } from "../classes/Model";
 import { User } from "../types/schemas";
+import { UserModel } from "./UserModel";
 
 const bcrypt = require('bcrypt');
 
-class RegisterModel extends Model {
+class RegisterModel extends UserModel {
 
     public _tableName = 'Users';
     public property_email : ModelProprety = {
@@ -26,7 +27,7 @@ class RegisterModel extends Model {
         if(await this._hashPassword()) {
             const userId = await this.save();
             if (userId !== false) {
-                    const userObj = await this.getById(userId);
+                    const userObj = await this.getById<User>(userId);
                     if (userObj) {
                         return {
                             id : userObj.id,

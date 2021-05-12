@@ -2,7 +2,9 @@ import * as Express from "express";
 import { body, validationResult } from "express-validator";
 import { RegisterModel } from "../../models/RegisterModel";
 import { InputController } from "../../classes";
-
+import { StandardResponse } from "../../types/StandardResponse";
+import { UserModel } from "../../models";
+import * as JWT from 'jsonwebtoken';
 
 const router = Express.Router();
 
@@ -48,19 +50,20 @@ router.post('/',
         };
 
         if (inController.hasErrors()) {
-            console.log(`incon has errors`);
             console.log(inController.inputs);
             inController.sendValidationErrors(req, res, next);
         } else {
             const user = await model.createAccount();
             if (user) {
-                req.session.user = user;
-                res.status(200).send({
-                    email: user.email,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    uuid: user.uuid
-                })
+                const token = JWT.sign({userId:user.id}, process.env.TOKEN_SECRET);
+                const response : StandardResponse = {
+                    success : true,
+                    data: {
+                        user: model.getCleanUser(user),
+                        token: token
+                    }
+                }
+                res.status(200).send(response);
             } else {
                 res.status(401).send({
                     message: 'Unable to create account, please try again.'

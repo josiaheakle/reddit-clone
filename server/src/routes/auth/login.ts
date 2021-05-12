@@ -4,6 +4,8 @@ import { body, validationResult } from 'express-validator';
 
 import { InputController } from "../../classes/InputController";
 import { LoginModel } from "../../models/LoginModel";
+import { StandardResponse } from "../../types/StandardResponse";
+import * as JWT from "jsonwebtoken";
 
 const router = Express.Router();
 
@@ -38,23 +40,33 @@ router.post('/',
             inController.sendValidationErrors(req, res, next);
         } else {
             const user = await model.login();
-            if (user) {
-                req.session.user = user;
-                res.status(200).send({
-                    email: user.email,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    uuid: user.uuid
+            if (user) {            
+                const token = JWT.sign({userId:user.id}, process.env.TOKEN_SECRET, {
+                    expiresIn: 3000
                 })
+                req.session.user = user;
+
+                console.log(req.session);
+
+                const response : StandardResponse = {
+                    success: true,
+                    data: {
+                        token: token,
+                        user: {
+                            email: user.email,
+                            firstName: user.firstName,
+                            lastName: user.lastName,
+                            uuid: user.uuid
+                        }
+                    }
+                }
+                res.status(200).send(response)
             } else {
                 res.status(401).send({
                     email: 'Email or password are incorrect, please try again.'
                 })
             }
         }
-
-
-        // res.status(400).send({opp:"ppoop"});
 
     });
 

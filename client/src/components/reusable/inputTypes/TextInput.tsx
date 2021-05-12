@@ -1,4 +1,3 @@
-import { on } from 'events';
 import * as React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -46,8 +45,8 @@ export const TextInput: React.FC<TextInputProps> = (props) => {
             </span>
             {props.errors?
             <ul className='TextInput-error-list'>
-                {props.errors.map((error) => {
-                    return <li className='TextInput-error'>{error}</li>
+                {props.errors.map((error,i) => {
+                    return <li key={i} className='TextInput-error'>{error}</li>
                 })}
             </ul>
             :null}

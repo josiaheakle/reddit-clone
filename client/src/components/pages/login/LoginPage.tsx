@@ -4,12 +4,16 @@ import * as React from 'react'
 import { TextInput } from "../../reusable/inputTypes/TextInput"
 import { Button } from "../../reusable/inputTypes/Button"
 import { useState } from 'react'
-import { updateInput as upIn } from '../../reusable/methods'
+import { Redirect } from 'react-router'
 import { StandardResponse } from '../../../types/StandardResponse'
-
+import { User } from "../../../types/schemas";
+import {UserHandler} from "../../../handlers/UserHandler";
+import { useEffect } from 'react'
 
 interface LoginPageProps {
-
+    setUser : (user : User) => void;
+    setToken : (token : string) => void;
+    user? : User;
 }
 
 export const LoginPage: React.FC<LoginPageProps> = (props) => {
@@ -17,6 +21,7 @@ export const LoginPage: React.FC<LoginPageProps> = (props) => {
     const [email, setEmail] = useState<string>();
     const [password, setPassword] = useState<string>();
     const [errors, setErrors] = useState<{[index:string]:Array<string>}>({});
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
     const updateInput = (e : React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) =>  {
         switch(e.target.id.replace('-input', '')) {
@@ -51,14 +56,25 @@ export const LoginPage: React.FC<LoginPageProps> = (props) => {
         const response : StandardResponse = await res.json();
         if(response.errors) {
             setErrors(response.errors);
-        } else {
-            
-        }
+        } else if (response.success === true && response.data) {
+            props.setToken(response.data.token);
+            props.setUser(response.data.user);
+            setIsLoggedIn(true);
+        } 
 
     }
+  
+
+    useEffect(() => {
+        console.log(props.user);
+        if (props.user) setIsLoggedIn(true);
+    }, [props.user])
 
     return (
         <div id='LoginPage'>
+            {isLoggedIn?
+                <Redirect to={{pathname: '/'}} ></Redirect>
+            :null}
             <div className="loginContainer">
                 <h2 className="loginHeader header-text">Login</h2>
                 <form onSubmit={login}>

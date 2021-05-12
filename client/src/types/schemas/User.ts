@@ -2,8 +2,7 @@ interface User {
     uuid? : string,
     firstName : string,
     lastName : string,
-    email : string,
-    created? : Date
+    email : string
 }
 
 export type {

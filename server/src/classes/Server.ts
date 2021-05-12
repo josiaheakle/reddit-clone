@@ -1,5 +1,4 @@
 import * as Express from "express";
-import { userInfo } from "node:os";
 import * as Winston from "winston";
 
 const path = require("path");
@@ -11,7 +10,8 @@ const morgan = require('morgan');
 const cors = require('cors');
 
 interface ServerOptions {
-    initRoutes : Function,
+    initRoutes : (app:Express.Application,apiUri?:string) => void,
+    apiUri? : string,
     reactBuild? : string,
     handlebarsHelpers?: { [index: string]: Function }
 }
@@ -19,6 +19,7 @@ interface ServerOptions {
 export class Server {
 
     public app: Express.Application;
+    private apiUri : string;
     private logger: Winston.Logger;
 
     constructor(serverOptions : ServerOptions) {
@@ -28,17 +29,22 @@ export class Server {
         this.setDev(); //REMOVE LATER
         this.setConfig();
         this.setLogger();
+        this.setSessionAuth();
+        if (serverOptions.apiUri) this.setApi(serverOptions.apiUri);
         if (serverOptions.handlebarsHelpers) this.setViewEngine(serverOptions.handlebarsHelpers);
-        if (serverOptions.reactBuild) this.setReactAppDefault(serverOptions.reactBuild);
         this.setStaticFiles();
         this.setRoutes(serverOptions.initRoutes);
-
-
+        if (serverOptions.reactBuild) this.setReactAppDefault(serverOptions.reactBuild);
+        
     }
 
     public start() {
         this.app.listen(process.env.PORT);
         this.logger.info(`Server started at ${process.env.PORT}`);
+    }
+
+    private setApi(apiUri : string) {
+        this.apiUri = apiUri;
     }
 
     private setStaticFiles() {
@@ -67,13 +73,18 @@ export class Server {
         this.app.set(`views`, `./src/views`);
     }
 
-    private setRoutes(initRoutes: Function) {
-        initRoutes(this.app);
+    private setRoutes(initRoutes: (app:Express.Application,apiUri?:string) => void) {
+        if (this.apiUri) initRoutes(this.app, this.apiUri);
+        else initRoutes(this.app);
     }
 
     private setConfig() {
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: false }));
+
+    }
+
+    private setSessionAuth() {
         this.app.use(cookieParser(process.env.SESSION_SECRET));
         this.app.use(session({
             secret: process.env.SESSION_SECRET,

@@ -3,22 +3,51 @@ import { User } from "../types/schemas";
 
 class UserHandler {
 
-    private user : User;
+    private static token: string;
 
-    constructor(user : User) {
-        this.user = user;
+    static setToken(token: string) {
+        UserHandler.token = token;
+        UserHandler.saveTokenLocalStorage();
     }
 
-    public getEmail() {
-        return this.user.email;
+    static removeToken() {
+        UserHandler.token = '';
+        UserHandler.removeTokenLocalStorage();
     }
 
-    public getFirstName() {
-        return this.user.firstName;
+    static removeTokenLocalStorage() {
+        localStorage.removeItem(`token`);
     }
 
-    public getLastName() {
-        return this.user.lastName;
+    static saveTokenLocalStorage() {
+        localStorage.setItem(`token`, UserHandler.token);
+    }
+
+    static getTokenHeader() {
+        return{
+            'x-access-token': UserHandler.token
+        }
+    }
+
+    static async checkForToken() : Promise<boolean> {
+        const token = localStorage.getItem(`token`);
+        if(token) {
+            UserHandler.setToken(token);
+            return true;
+        } else return false;
+    }
+
+    static async getUserFromServer() : Promise<User|false> {
+        const res = await fetch(`${process.env.REACT_APP_URL}/user`, {
+            method: 'get',
+            mode: 'cors',
+            headers: UserHandler.getTokenHeader()
+        });
+        if (res.status === 200) {
+            const response = await res.json();
+            if (response.data.user) return response.data.user;
+        } 
+        return false;
     }
 
 }

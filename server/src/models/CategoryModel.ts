@@ -47,7 +47,7 @@ class CategoryModel extends Model {
     }
 
     public async getNameById ( id : number ) {
-        const category = await this.getById(id);
+        const category = await this.getById<Category>(id);
         if (!category) return false;
         return category.name;
     }

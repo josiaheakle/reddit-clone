@@ -63,7 +63,16 @@ class UserModel extends Model {
 
     }
 
-    public updateEmailFromSession ( session : Session.SessionData ) {
+    public getCleanUser(user: User) {
+        return {
+            uuid: user.uuid,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName
+        }
+    }
+
+    public updateEmailFromSession ( session : Session.Session & Partial<Session.SessionData> ) {
         if (session.user) {
             this.property_email.value = session.user.email;
         }
