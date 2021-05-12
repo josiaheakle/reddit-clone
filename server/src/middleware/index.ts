@@ -1,2 +1,0 @@
-
-export { handleInfoMessages } from './handleInfoMessages';

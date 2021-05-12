@@ -1,20 +1,33 @@
+// CSS
 import '../styles/App.css';
 import '../styles/pages.css';
 import '../styles/inputTypes.css';
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-import {LoginPage} from './pages/login/LoginPage';
-import { RegisterPage } from './pages/register/RegisterPage';
-import { UserHandler } from '../handlers/UserHandler';
-import React, { useEffect } from 'react';
-import { useState } from 'react';
-import { User } from "../types/schemas"
-require('dotenv').config();
 
+// React
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+
+// Pages
+import { LoginPage } from './pages/login/LoginPage';
+import { RegisterPage } from './pages/register/RegisterPage';
+
+// Handlers
+import { UserHandler } from '../handlers/UserHandler';
+
+// Types
+import { User } from "../types/schemas"
+
+// secrets
+require('dotenv').config();
 
 const App : React.FC = () => {
 
+  // User object, determines logged in status
   const [user, setUser] = useState<User|undefined>();
 
+  /**
+   * Checks for token and gets user from server if token is set
+   */
   const checkForUser = async () => {
     if (await UserHandler.checkForToken()) {
       let user = await UserHandler.getUserFromServer();
@@ -24,15 +37,18 @@ const App : React.FC = () => {
     }
   }
 
+  /**
+   * Removes token from localstorage,
+   * sets user to undefined
+   */
   const logoutUser = () => {
     UserHandler.removeToken();
     setUser(undefined);
   }
 
-  useEffect(()=>{
-    console.log({user:user})
-  }, [user])
-
+  /**
+   * Check for user on load
+   */
   useEffect(() => {
     checkForUser();
   }, []);
@@ -41,7 +57,6 @@ const App : React.FC = () => {
     <div className="App">
       <Router>
         <Switch>
-          
           <Route exact path='/'>
             {user===undefined?
             <Redirect to='/login'></Redirect>

@@ -4,6 +4,12 @@ import * as JWT from 'jsonwebtoken';
 
 class AuthController {
 
+    static generateToken(userId : number|string, expiresIn?: number) {
+        return JWT.sign({userId:userId}, process.env.TOKEN_SECRET, {
+            expiresIn: expiresIn | 500
+        })
+    }
+
     static verifyToken(req : Express.Request, res : Express.Response, next : Function) {
         const token = req.headers['x-access-token'];
         console.log(`token:`);

@@ -1,12 +1,17 @@
+// React
 import * as React from 'react'
+import { useState, useEffect } from 'react'
+import { Redirect } from "react-router-dom";
+
+// Input Types
 import { TextInput } from "../../reusable/inputTypes/TextInput"
 import { Button } from "../../reusable/inputTypes/Button"
-import { useState } from 'react'
-import { User } from '../../../types/schemas'
-import { useEffect } from 'react'
-import { StandardResponse } from '../../../types/StandardResponse'
-import {Redirect } from "react-router-dom";
 
+// Data Types
+import { User } from '../../../types/schemas'
+import { StandardResponse } from '../../../types/StandardResponse'
+
+// Props
 interface RegisterPageProps {
     setUser : (user : User) => void;
     setToken : (token : string) => void;
@@ -22,16 +27,24 @@ export const RegisterPage: React.FC<RegisterPageProps> = (props) => {
     const [passwordConfirm, setPasswordConfirm] = useState<string>();
     const [errors, setErrors] = useState<{[index:string]:Array<string>}>({});
 
+    /**
+     * Updates input using dom id
+     * @param e change event
+     */
     const updateInput = (e : React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) =>  {
         const inputName = e.target.id.replace('-input', '');
         eval(`set${inputName.charAt(0).toUpperCase()}${inputName.slice(1)}('${e.target.value}')`);
     }
 
+    /**
+     * Sends new user data to server, 
+     * if success user is set,
+     * otherwise errors are set
+     * @param e submit event
+     */
     const register = async (e : React.FormEvent) : Promise<void> => {
 
         e.preventDefault();
-
-        console.log(`${process.env.REACT_APP_URL}/login`);
 
         const res = await fetch(`${process.env.REACT_APP_URL}/register`, {
             method: 'post',
@@ -54,12 +67,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = (props) => {
             props.setUser(result.data.user);
             props.setToken(result.data.token);
         }
-
     }
-
-    useEffect(() => {
-        console.log(`e: ${email}\nfn: ${firstName}\nln: ${lastName}\npw: ${password}\npwc: ${passwordConfirm}`);
-    },[email, firstName, lastName, passwordConfirm, password]);
 
     return (
         <div id='LoginPage'>
