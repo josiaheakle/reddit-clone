@@ -1,0 +1,66 @@
+
+
+.Navbar {
+    width: calc(100vw - 8rem);
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    padding-left: 4rem;
+    padding-right: 4rem;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    background-color: var(--shade);
+}
+
+.Navbar-header {
+    color: var(--orange);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.Navbar-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+
+.Navbar-button {
+    width: 100px;
+    height: 36px;
+    line-height: 36px;
+    border: none;
+    border-radius: 12px;
+    margin: .5rem;
+    background-color: var(--dark);
+    color: var(--light);
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+}
+
+.Navbar-button.active {
+    color: var(--orange);
+    font-weight: lighter;
+}
+
+.Navbar-button:hover,
+.Navbar-button:focus {
+
+    filter: brightness(150%);
+}
+
+.NavCard {
+    position: absolute;
+    width: 348px;
+    height: 200px;
+    background-color: var(--dark);
+    border-radius: 12px;
+    right: 4rem;
+    top: 5rem;
+}

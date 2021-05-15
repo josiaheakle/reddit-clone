@@ -11,8 +11,6 @@ const router = Express.Router();
 
 router.get('/', async (req : Express.Request, res : Express.Response, next : Function) => {
 
-    console.log(`here`);
-
     const userModel = new UserModel();
     let user: User|false = false;
     if (req.userId) {

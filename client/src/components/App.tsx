@@ -7,9 +7,14 @@ import '../styles/inputTypes.css';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 
+// Reusables
+import { Navbar } from './reusable/nav/Navbar';
+
 // Pages
+import { Dashboard } from './pages/dashboard/Dashboard';
 import { LoginPage } from './pages/login/LoginPage';
 import { RegisterPage } from './pages/register/RegisterPage';
+import { ListPage } from './pages/lists/ListPage';
 
 // Handlers
 import { UserHandler } from '../handlers/UserHandler';
@@ -55,15 +60,12 @@ const App : React.FC = () => {
 
   return (
     <div className="App">
-      <Router>
+      <Router>  
+
+
+
         <Switch>
-          <Route exact path='/'>
-            {user===undefined?
-            <Redirect to='/login'></Redirect>
-            :null}
-            <h1>{(user?.firstName)}</h1>
-            <button onClick={logoutUser}>logout</button>
-          </Route>
+
           <Route path='/login'>
             <LoginPage user={user} setUser={setUser} setToken={UserHandler.setToken} />
           </Route>
@@ -71,9 +73,17 @@ const App : React.FC = () => {
             <RegisterPage user={user} setUser={setUser} setToken={UserHandler.setToken} />
           </Route>
           <Route path='/'>
+            <Navbar title='Keep Connect'></Navbar>          
+          </Route>
+          <Route exact path='/'>
             {user===undefined?
-            <Redirect to='/login'></Redirect>
-            :null}
+              <Redirect to='/login'></Redirect>
+              :null
+            }
+            <Dashboard/>
+          </Route>
+          <Route path='/lists'>
+              <ListPage />
           </Route>
         </Switch>
       </Router>

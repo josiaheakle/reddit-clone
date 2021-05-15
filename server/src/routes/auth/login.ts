@@ -51,7 +51,10 @@ router.post('/',
                 res.status(200).send(response)
             } else {
                 res.status(401).send({
-                    email: 'Email or password are incorrect, please try again.'
+                    success: false,
+                    errors: {
+                        email: ['Email or password are incorrect, please try again.']
+                    }
                 })
             }
         }

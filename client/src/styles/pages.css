@@ -1,5 +1,8 @@
 
-
+.Page {
+  margin-top: 68px;
+  height: calc(100vh - 68px);
+}
 
 
   #LoginPage {
@@ -16,7 +19,7 @@
   
   .loginContainer {
     background-color: var(--shade);
-    width: 600px;
+    width: 300px;
     min-height: 400px;
     border-radius: 50px;
     color: var(--orange);
@@ -28,7 +31,7 @@
   
   .loginHeader {
     text-align: center;
-    font-size: 4rem;
+    font-size: 3.5rem;
     margin-bottom: 20px;
   }  
 

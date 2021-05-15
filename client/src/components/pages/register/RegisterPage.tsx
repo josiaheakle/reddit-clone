@@ -26,14 +26,31 @@ export const RegisterPage: React.FC<RegisterPageProps> = (props) => {
     const [password, setPassword] = useState<string>();
     const [passwordConfirm, setPasswordConfirm] = useState<string>();
     const [errors, setErrors] = useState<{[index:string]:Array<string>}>({});
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     /**
      * Updates input using dom id
      * @param e change event
      */
-    const updateInput = (e : React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) =>  {
-        const inputName = e.target.id.replace('-input', '');
-        eval(`set${inputName.charAt(0).toUpperCase()}${inputName.slice(1)}('${e.target.value}')`);
+     const updateInput = (e : React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) =>  {
+        switch(e.target.id.replace('-input', '')) {
+            default:
+            case('lastName'):
+                setLastName(e.target.value);
+                break;
+            case('firstName'):
+                setFirstName(e.target.value);
+                break;
+            case('email'):
+                setEmail(e.target.value);
+                break;
+            case('password'):
+                setPassword(e.target.value);
+                break;
+            case('passwordConfirm'):
+                setPasswordConfirm(e.target.value);
+                break;
+        }
     }
 
     /**
@@ -82,7 +99,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = (props) => {
                     <TextInput id='lastName-input' label='Last Name' type='text' onChange={updateInput} errors={errors.lastName}></TextInput>
                     <TextInput id='password-input' label='Password' type='password' onChange={updateInput} errors={errors.password}></TextInput>
                     <TextInput id='passwordConfirm-input' label='Password Repeat' type='password' onChange={updateInput} errors={errors.passwordConfirm}></TextInput>
-                    <Button id='login-submit-input' label='Create Account' />
+                    <Button isLoading={isLoading} id='login-submit-input' label='Create Account' />
                 </form>
             <a className='bottom-link' href='/login'>Already have an account?</a>
             </div>

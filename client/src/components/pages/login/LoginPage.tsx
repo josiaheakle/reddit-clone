@@ -39,8 +39,6 @@ export const LoginPage: React.FC<LoginPageProps> = (props) => {
 
         e.preventDefault();
 
-        console.log(`${process.env.REACT_APP_URL}/login`);
-
         const res = await fetch(`${process.env.REACT_APP_URL}/login`, {
             method: 'post',
             mode: 'cors',
@@ -54,6 +52,7 @@ export const LoginPage: React.FC<LoginPageProps> = (props) => {
         });
 
         const response : StandardResponse = await res.json();
+        console.log(response)
         if(response.errors) {
             setErrors(response.errors);
         } else if (response.success === true && response.data) {
@@ -66,7 +65,6 @@ export const LoginPage: React.FC<LoginPageProps> = (props) => {
   
 
     useEffect(() => {
-        console.log(props.user);
         if (props.user) setIsLoggedIn(true);
     }, [props.user])
 
