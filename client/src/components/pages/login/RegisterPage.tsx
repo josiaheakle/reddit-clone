@@ -1,6 +1,5 @@
 // React
-import * as React from 'react'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Redirect } from "react-router-dom";
 
 // Input Types
@@ -15,7 +14,6 @@ import { StandardResponse } from '../../../types/StandardResponse'
 interface RegisterPageProps {
     setUser : (user : User) => void;
     setToken : (token : string) => void;
-    user?: User;
 }
 
 export const RegisterPage: React.FC<RegisterPageProps> = (props) => {
@@ -25,8 +23,8 @@ export const RegisterPage: React.FC<RegisterPageProps> = (props) => {
     const [lastName, setLastName] = useState<string>();
     const [password, setPassword] = useState<string>();
     const [passwordConfirm, setPasswordConfirm] = useState<string>();
+
     const [errors, setErrors] = useState<{[index:string]:Array<string>}>({});
-    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     /**
      * Updates input using dom id
@@ -87,22 +85,17 @@ export const RegisterPage: React.FC<RegisterPageProps> = (props) => {
     }
 
     return (
-        <div id='LoginPage'>
-            {props.user?
-                <Redirect to='/'></Redirect>
-            :null}
-            <div className="loginContainer">
-                <h2 className="loginHeader header-text">Register</h2>
-                <form onSubmit={register}>
-                    <TextInput id='email-input' label='Email' type='email' onChange={updateInput} errors={errors.email} ></TextInput>
-                    <TextInput id='firstName-input' label='First Name' type='text' onChange={updateInput} errors={errors.firstName}></TextInput>
-                    <TextInput id='lastName-input' label='Last Name' type='text' onChange={updateInput} errors={errors.lastName}></TextInput>
-                    <TextInput id='password-input' label='Password' type='password' onChange={updateInput} errors={errors.password}></TextInput>
-                    <TextInput id='passwordConfirm-input' label='Password Repeat' type='password' onChange={updateInput} errors={errors.passwordConfirm}></TextInput>
-                    <Button isLoading={isLoading} id='login-submit-input' label='Create Account' />
-                </form>
+        <div className="form-card">
+            <h2 className="form-header">Register</h2>
+            <form onSubmit={register}>
+                <TextInput id='email-input' label='Email' type='email' onChange={updateInput} errors={errors.email} ></TextInput>
+                <TextInput id='firstName-input' label='First Name' type='text' onChange={updateInput} errors={errors.firstName}></TextInput>
+                <TextInput id='lastName-input' label='Last Name' type='text' onChange={updateInput} errors={errors.lastName}></TextInput>
+                <TextInput id='password-input' label='Password' type='password' onChange={updateInput} errors={errors.password}></TextInput>
+                <TextInput id='passwordConfirm-input' label='Password Repeat' type='password' onChange={updateInput} errors={errors.passwordConfirm}></TextInput>
+                <Button id='login-submit-input' label='Create Account' />
+            </form>
             <a className='bottom-link' href='/login'>Already have an account?</a>
-            </div>
         </div>
     );
 }

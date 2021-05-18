@@ -4,7 +4,8 @@ import '../styles/pages.css';
 import '../styles/inputTypes.css';
 
 // React
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import React, { useEffect, useState } from 'react';
 
 // Reusables
@@ -12,12 +13,10 @@ import { Navbar } from './reusable/nav/Navbar';
 
 // Pages
 import { Dashboard } from './pages/dashboard/Dashboard';
-import { LoginPage } from './pages/login/LoginPage';
-import { RegisterPage } from './pages/register/RegisterPage';
+import { AuthPage } from './pages/login/';
 import { ListPage } from './pages/lists/ListPage';
 
-// Handlers
-import { UserHandler } from '../handlers/UserHandler';
+import { TokenHandler, useUserToken } from '../handlers/TokenHandler';
 
 // Types
 import { User } from "../types/schemas"
@@ -25,67 +24,34 @@ import { User } from "../types/schemas"
 // secrets
 require('dotenv').config();
 
+
+
 const App : React.FC = () => {
 
   // User object, determines logged in status
-  const [user, setUser] = useState<User|undefined>();
-
-  /**
-   * Checks for token and gets user from server if token is set
-   */
-  const checkForUser = async () => {
-    if (await UserHandler.checkForToken()) {
-      let user = await UserHandler.getUserFromServer();
-      if (user) {
-        setUser(user);
-      }
-    }
-  }
-
-  /**
-   * Removes token from localstorage,
-   * sets user to undefined
-   */
-  const logoutUser = () => {
-    UserHandler.removeToken();
-    setUser(undefined);
-  }
-
-  /**
-   * Check for user on load
-   */
-  useEffect(() => {
-    checkForUser();
-  }, []);
+  const [user, setUser] = useUserToken();
+  const authPages = [
+    '/', '/households', '/lists', '/account'
+  ]
 
   return (
     <div className="App">
-      <Router>  
-
-
-
+      <Router>
+      {!user?
+        <AuthPage user={user} setUser={setUser} setToken={TokenHandler.setToken}/>
+      :
         <Switch>
-
-          <Route path='/login'>
-            <LoginPage user={user} setUser={setUser} setToken={UserHandler.setToken} />
-          </Route>
-          <Route path='/register'>
-            <RegisterPage user={user} setUser={setUser} setToken={UserHandler.setToken} />
-          </Route>
-          <Route path='/'>
-            <Navbar title='Keep Connect'></Navbar>          
-          </Route>
-          <Route exact path='/'>
-            {user===undefined?
-              <Redirect to='/login'></Redirect>
-              :null
-            }
-            <Dashboard/>
-          </Route>
-          <Route path='/lists'>
+          <Navbar validRoutes={authPages}>
+            <Route exact path='/'>
+              <Dashboard/>
+            </Route>
+            <Route path='/lists'>
               <ListPage />
-          </Route>
+            </Route>
+          </Navbar>
         </Switch>
+
+      }
       </Router>
     </div>
   );
