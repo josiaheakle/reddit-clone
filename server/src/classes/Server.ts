@@ -53,7 +53,6 @@ export class Server {
     }
 
     private setReactAppDefault ( reactBuildLocation : string ) {
-        console.log(`setting  react app as default ${reactBuildLocation}`);
         this.app.use((req : Express.Request, res : Express.Response, next : Function) => {
             res.sendFile(reactBuildLocation);
         });

@@ -23,9 +23,6 @@ class UserModel extends Model {
             Database.conn.query(SQL, [this.property_email.value], async (err, result) => {
                 if (err) rej (err);
                 if (result) {
-                    console.log ({
-                        emailres : result
-                    })
                     const user = result[0];
                     if (!user) res (false);
                     else res (user);

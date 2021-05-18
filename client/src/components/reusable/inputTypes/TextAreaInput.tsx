@@ -3,13 +3,13 @@ import { useState } from 'react';
 import { ChangeEvent } from '../../../types/EventTypes';
 import InputProps from "./InputProps";
 
-interface TextInputProps extends InputProps {
+interface TextAreaInputProps extends InputProps {
     type: string;
     onChange: ChangeEvent<HTMLInputElement> ;
     errors?: Array<string>;
 }
 
-export const TextInput: React.FC<TextInputProps> = (props) => {
+export const TextAreaInput: React.FC<TextAreaInputProps> = (props) => {
 
     const [isFocued, setFocused] = useState<boolean>(false);
     const [input, setInput] = useState<string>();

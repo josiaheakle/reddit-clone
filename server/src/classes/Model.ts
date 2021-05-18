@@ -31,15 +31,9 @@ abstract class Model {
 
         const propNames = this._getPropertyNames();
 
-        console.log(propNames);
 
         propNames.forEach(prop => {
             if(request.body[prop]) {
-                console.log({
-                    name: prop,
-                    req: request.body[prop],
-                    prop :this._getPropertyByName(prop)    
-                })
                 this._getPropertyByName(prop).value = request.body[prop];
             }
         });
@@ -54,8 +48,6 @@ abstract class Model {
                     if (typeof (rule) === 'string') {
                         // if rule is a string
                         if (! (await this[`_${rule}Rule`](prop))) {
-
-                            console.log(`${rule} broken`);
                             errors.push({
                                 property : prop,
                                 rule     : rule,
@@ -95,11 +87,7 @@ abstract class Model {
     
         return new Promise((res, rej) => {
             Database.conn.query(SQL, values, (error : Mysql.MysqlError, results : {[index:string]:any}) => {
-                console.log(`RESULT`);
-                console.log(results);
 
-                console.log(`ERROR`);
-                console.log(error);
                 if(error || !results.insertId) res(false);
                 else res(results.insertId);
             });
@@ -121,15 +109,11 @@ abstract class Model {
         const property = this._getPropertyByName(propertyName);
         let SQL = `SELECT * FROM ${this._tableName} WHERE ${property.columnName}=? `;
 
-        console.log(`_uniqueRule() : \n${SQL}`)
 
         return new Promise((res, rej) => {
             Database.conn.query(SQL, property.value, (error : Mysql.MysqlError, results : {[index:string]:any}) => {
                 if(error || results.length > 0) { 
-                    console.log({
-                        error : error,
-                        results : results
-                    })
+
                     res(false); 
                 }
                 else res(true);

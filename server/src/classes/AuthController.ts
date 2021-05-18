@@ -12,8 +12,6 @@ class AuthController {
 
     static verifyToken(req : Express.Request, res : Express.Response, next : Function) {
         const token = req.headers['x-access-token'];
-        console.log(`token:`);
-        console.log(token);
         let tokenRes;
         try {
             if (typeof(token) === 'string') tokenRes = JWT.verify(token, process.env.TOKEN_SECRET);

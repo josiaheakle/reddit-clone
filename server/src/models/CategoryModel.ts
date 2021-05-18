@@ -33,7 +33,6 @@ class CategoryModel extends Model {
             const userCategoryModel = new UserCategoryModel();
             userCategoryModel.property_userId.value = userId;
             userCategoryModel.property_categoryId.value = categoryId;
-            console.log ( { userCategory : await userCategoryModel.save() });
             const category = await this.getById(categoryId);
             return {
                 admin : category['admin'],

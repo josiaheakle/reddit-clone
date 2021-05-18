@@ -2,6 +2,8 @@
 
 import React from 'react'
 
+import {NewList} from "./NewList"
+
 interface ListPageProps {
 
 }
@@ -9,7 +11,7 @@ interface ListPageProps {
 const ListPage: React.FC<ListPageProps> = ({}) => {
         return(
         <div className='Page'>
-            category
+            <NewList></NewList>
         </div>);
 }
 

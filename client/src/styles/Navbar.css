@@ -15,6 +15,11 @@
     justify-content: space-between;
 
     background-color: var(--shade);
+    transition: top 250ms ease-in-out;
+}
+
+.Navbar.hidden {
+    top: -70px;
 }
 
 .Navbar-header {
@@ -22,12 +27,6 @@
     font-family: 'Montserrat', sans-serif;
 }
 
-.Navbar-buttons {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-}
 
 
 .Navbar-button {
@@ -44,6 +43,7 @@
     text-align: center;
 }
 
+
 .Navbar-button.active {
     color: var(--orange);
     font-weight: lighter;
@@ -55,12 +55,81 @@
     filter: brightness(150%);
 }
 
-.NavCard {
-    position: absolute;
-    width: 348px;
-    height: 200px;
-    background-color: var(--dark);
-    border-radius: 12px;
-    right: 4rem;
-    top: 5rem;
+
+@media only screen and (min-width: 800px) {
+
+    .Navbar-buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+
+}
+
+
+@media only screen and (max-width: 799px) {
+    .Navbar {
+        justify-content: center;
+
+    }
+
+    .Navbar-buttons {
+        background-color: var(--shade);
+        width: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        position: absolute;
+        left: -220px;
+        transition: left 350ms ease-in-out;
+        box-shadow: 2px 0px 2px var(--dark);
+    }
+    
+    .Navbar-buttons.open {
+        left: 0px;
+    }
+
+    .Navbar-button {
+        width: 80%;
+        margin: .2rem;
+    }
+    
+    .mobile-menu-button-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 0px;
+        height: 0px;
+
+        
+        position: absolute;
+        top: 34px;
+        right: 34px;
+
+    }
+
+    .mobile-menu-button {
+        background-color: var(--shade);
+        border-radius: 8px;
+        padding: 6px;
+        border: none;
+        cursor: pointer;
+        height: fit-content;
+    }
+
+    .mobile-menu-button:hover {
+        filter: brightness(1.5);
+    }
+
+
+    .mobile-menu-bar {
+        width: 20px;
+        height: 4px;
+        margin: 3px;
+        background-color: black;
+    }
 }
