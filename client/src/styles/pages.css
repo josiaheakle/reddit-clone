@@ -21,7 +21,31 @@
   /* background-color: var(--main); */
 }
 
-  
+.new-task-container {
+  background-color: var(--light);
+  padding: .25rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: .5rem;
+  margin-bottom: 1rem;
+}
+
+.new-task-container>.TextInputContainer,
+.date-input-container>.TextInputContainer {
+  margin-top: .1rem;
+  margin-bottom: .1rem;
+}
+
+.date-input-container {
+  width: 250px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
 
 
 .bottom-link {
@@ -37,3 +61,60 @@
   text-decoration: underline;
 }
   
+
+#new-task-title-input,
+#new-task-date-input {
+  
+  width: 160px;
+}
+#new-task-title-input {
+  padding-right: 1.75rem;
+}
+
+
+
+.new-task-shrunk-container {
+  width: calc(200px + 1rem);
+  border-radius: 8px;
+  height: 38px;
+  padding-left: 1.5rem;
+  padding-right: .5rem;
+  outline: none;
+  background-color: var(--light);
+  color: var(--dark);
+  font-weight: bold;
+  transition: filter .15s;
+  font-size: 16px;
+  padding-top: .25rem;
+  padding-bottom:.25rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.new-task-due-date {
+  font-size: 12px;
+  margin-right: 8px;
+}
+
+
+.new-task-text { 
+  display: flex;
+  align-items: center;
+}
+
+.new-task-right {
+  display: flex;
+  flex-direction: row;
+
+}
+
+.NewTaskList {
+  margin-top: .5rem;
+  margin-bottom: .5rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

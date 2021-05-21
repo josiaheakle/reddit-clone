@@ -1,28 +1,28 @@
 import * as React from 'react'
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChangeEvent } from '../../../types/EventTypes';
-import InputProps from "./InputProps";
 
-interface TextAreaInputProps extends React.HTMLAttributes<HTMLTextAreaElement> {
-    onChange: ChangeEvent<HTMLTextAreaElement>;
+interface DateInputProps extends React.HTMLAttributes<HTMLInputElement> {
     errors?: Array<string>;
+    defaultValue?: string;
+    onChange: ChangeEvent<HTMLInputElement>;
+    reset?:boolean;
     [index:string]:any;
 }
 
-export const TextAreaInput: React.FC<TextAreaInputProps> = (props) => {
+export const DateInput: React.FC<DateInputProps> = (props) => {
 
     const [isFocued, setFocused] = useState<boolean>(false);
     const [input, setInput] = useState<string>();
 
-    const inputRef : React.RefObject<HTMLTextAreaElement> = React.createRef();
+    const inputRef : React.RefObject<HTMLInputElement> = React.createRef();
 
-    const onChange = (event : React.ChangeEvent<HTMLTextAreaElement>) : void => {
+    const onChange = (event : React.ChangeEvent<HTMLInputElement>) : void => {
         setInput(event.target.value);
-        props.onChange(event)
+        props.onChange(event);
     }
 
-    const onFocus = (event : React.FocusEvent<HTMLTextAreaElement>) : void => {
+    const onFocus = (event : React.FocusEvent<HTMLInputElement>) : void => {
         setFocused(true);
     }
 
@@ -32,13 +32,15 @@ export const TextAreaInput: React.FC<TextAreaInputProps> = (props) => {
         }
     }
 
+    
     useEffect(() => {
         if(props.reset) {
-            if(inputRef.current) inputRef.current.innerHTML='';
+            if(inputRef.current) inputRef.current.value='';
             setInput(undefined);
             setFocused(false);
         } 
         if (props.defaultValue) {
+            setInput(props.defaultValue);
             setFocused(true);
         }
     }, [props])
@@ -46,13 +48,14 @@ export const TextAreaInput: React.FC<TextAreaInputProps> = (props) => {
     useEffect(() => {
         if(input && input.length>0) setFocused(true)
         else setFocused(false);
+        if(input===undefined) setFocused(false);
     }, [input])
 
     return (
-        <div className="TextInputContainer">
+        <div className="TextInputContainer Date">
             <span className={`TextInput ${props.errors?'invalid':null}`}>
                 <label className={(isFocued?'focused':'')} htmlFor={props.id}>{props.label}</label>
-                <textarea ref={inputRef} {...props} onChange={onChange} onFocus={onFocus} onBlur={onBlur} ></textarea>
+                <input ref={inputRef} {...props} className={` ${(!isFocued) ? 'empty' : null}`} type='date' onChange={onChange} onFocus={onFocus} onBlur={onBlur}  ></input>
             </span>
             {props.errors?
             <ul className='TextInput-error-list'>

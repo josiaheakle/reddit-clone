@@ -20,9 +20,16 @@
 .TextInputContainer {
     display: flex;
     flex-direction: column;
-    margin-bottom: 1rem;
+    align-items: center;
+    margin-top: .5rem;
+    margin-bottom: .5rem;
     justify-content: space-between;
     width: 100%;
+}
+
+.TextInputContainer.Date,
+.TextInputContainer.Left {
+    align-items: baseline;
 }
 
 .TextInput {
@@ -32,6 +39,7 @@
 }
 
 .TextInput>label {
+    pointer-events: none;
     z-index: 1;
     height: 0px;
     position: relative;
@@ -44,10 +52,13 @@
     color: var(--light);
 }
 
-.TextInput>input {
+
+
+.TextInput>input,
+.TextInput>textarea {
 
     width: 200px;
-    border-radius: 3rem;
+    border-radius: 8px;
     height: 28px;
     padding-left: 1.5rem;
     padding-right: 1.5rem;
@@ -57,13 +68,44 @@
     color: var(--orange);
     transition: filter .15s;
     font-size: 16px;
-    padding-top: .75rem;
+    padding-top: .8rem;
     padding-bottom: 0px;
 
 }
 
+.TextInput>textarea {
+    padding-top: 1rem;   
+}
 
-.TextInput>input:hover {
+.TextInput>input[type='date'] {
+    transition: color 250ms ease, padding 250ms ease;
+}
+
+.TextInputContainer.Date {
+    width: 160px;
+}
+
+.TextInput>input[type='date'].empty {
+    color: transparent;
+    padding-top: .375rem;
+    padding-bottom: .375rem;
+}
+
+.TextInput>input[type='date']:focus {
+    padding-top: .75rem;
+    padding-bottom: 0rem;
+    color: var(--orange);
+}
+
+.TextInput>textarea {
+    resize: vertical;
+    height: 100px;
+    min-height: 80px;
+    max-height: 200px;
+}
+
+.TextInput>input:hover,
+.TextInput>textarea:hover {
     filter: brightness(1.5);
 }
 
@@ -96,7 +138,7 @@
     border: none;
     
   
-    border-radius: 2rem;
+    border-radius: 8px;
     background-color: var(--dark);
     color: var(--light);
     padding: .3rem; 
@@ -111,9 +153,7 @@
     /* outline: 1px solid black;
     outline-offset: -1px; */
   
-  
-  
-  }
+}
 
 .Button {
     cursor: pointer;
@@ -127,19 +167,14 @@
 
 }
 
-.Button.isLoading {
-    animation: ButtonLoad 5s;
-}
+#new-task-button {
 
-@keyframes ButtonLoad {
-
-    0% {
-        filter: brightness(.9);
-    }
-
-    50% {
-        filter: brightness(1.5);
-    }
-
-
+    padding: 0px;
+    height: 38px;
+    width: 38px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
 }

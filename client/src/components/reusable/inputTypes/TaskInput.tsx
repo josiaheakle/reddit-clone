@@ -9,6 +9,6 @@ interface TaskInputProps extends InputProps {
 
 export const TaskInput: React.FC<TaskInputProps> = (props) => {
         return (
-            <TextInput type="text" label={props.label} onChange={props.onChange} ></TextInput>
+            <TextInput className='new-task' type="text" label={props.label} onChange={props.onChange} ></TextInput>
         );
 }

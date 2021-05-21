@@ -1,6 +1,9 @@
 
 
 .Navbar {
+
+    z-index: 10;
+
     width: calc(100vw - 8rem);
 
     position: absolute;
